@@ -51,13 +51,13 @@ if (p_num % 2 == 0):
     print("2€: ", two)
 
 if (p_num % 1 == 0):
-    one = int(p_num / 200)
+    one = int(p_num / 1)
     p_num -= one * 1
     print("1€: ", one)
 
 if (p_num % .5 == 0):
-    point_five = int(p_num / 200)
-    p_num -= point_five * 200
+    point_five = int(p_num / .5)
+    p_num -= point_five * .5
     print(".5€: ", point_five)
 
 if (p_num % .2 == 0):
