@@ -17,4 +17,5 @@ print(str(str(first_int) + " - " + str(second_int)) + " = " + str(first_int - se
 #This happens because in pyhton integers doesn't have a limit, meanwhile floats have
 
 print(0.3 - .2)
-#The result is .09999999999 because of a precision issue of python
+ 
+#Theresult is .09999999999 because of a precision issue of pythonuuu
