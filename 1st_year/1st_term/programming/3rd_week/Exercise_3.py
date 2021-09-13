@@ -7,4 +7,9 @@ change_var = 2
 print("change_var is %i of type" % change_var, str(type(change_var)))
 
 #Change the value of variable
-change_var = 2.2
+change_var = 2.5
+
+#Print the variable at the end and the type
+print("change_var is %f of type" % change_var, str(type(change_var)))
+
+#It doesn't matter the type of the varieble when you change it's value
