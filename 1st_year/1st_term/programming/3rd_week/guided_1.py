@@ -1,34 +1,26 @@
-"""This is the first guided exercie"""
+"""This is the first guided exercie:
+It is needed to fill the gaps in the """
 
-first_part = """Given the current situation that King’s Landing is facing, the House %s is asking for your economic services because
-of the following cause %s."""
-third_part = """
-The estimated total quantity is"""
-fourth_part = """gold coins. The loan will be returned during the """
-fifth_part = """> following years with
-"""
-seventh_part = """I hope the bank will consider this proposal because the House"""
-eighth_part = """I hope the bank will consider this proposal because the House """
+#This text is the given one (the %s are the gaps which must be filled with the answers of the user)
+text = """Given the current situation that King’s Landing is facing, the House %s is asking for your economic services because
+of the following cause %s.
+The estimated total quantity is %s gold coins. The loan will be returned during the %s following years with
+%s of bank interest. Thus, the money recovered from the bank, once the loan is completely returned, will be %s
+gold coins
+I hope the bank will consider this proposal because the House %s always pays its debts."""
 
+first_input = input("Name of the house ")
 
+second_input = input("Name of a service")
 
-print("In this program I will help you to fill the form to ask money")
-first_input = input("Please enter the name of the house ")
+third_input = float(input("Quantity of gold you want to get"))
 
+fourth_input = input("Numbers of years you need to return the previous quantity")
 
-second_input = input("")
+fifth_input = float(input("Interest of the loan" + "%"))
 
-third_input = input("")
+sixth_input = third_input + (third_input * fifth_input)
 
-fourth_input = input("")
+seventh_input = first_input
 
-
-fifth_input = input("")
-
-sixth_input = input("")
-
-seventh_input = input("")
-
-eighth_input = input("")
-
-print(first_part % (first_input, second_input))
+print(text % (first_input, second_input, third_input, fourth_input, fifth_input, sixth_input, seventh_input))
