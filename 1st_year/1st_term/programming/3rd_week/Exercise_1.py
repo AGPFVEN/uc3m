@@ -1,3 +1,4 @@
+#This program just declares all the variables types
 _integer = 2
 _float = 2.1
 _bool = True
