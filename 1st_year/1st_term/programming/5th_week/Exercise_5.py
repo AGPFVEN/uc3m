@@ -11,6 +11,7 @@ if (inp == pin):
     print("Your balance is: ", balanece)
     exit()
 
+#Request the pin two times
 else:
     for i in range(2):
         inp = input("Your pin is incorrect, try again: ")
@@ -19,4 +20,5 @@ else:
             print("Your balance is ", balanece)
             exit()
 
+#If the  user fails all the oportunities this will be printed
 print("You failed too many times")
