@@ -15,5 +15,5 @@ while(controller != True):
         if(number.isdigit() == False and number != "."):
             controller = False
 
-#Result
+#Result of the program
 print("The square of ", inp, " is ", float(inp) ** 2)
