@@ -27,20 +27,31 @@ print("Original orders:")
 
 #Fill customers
 for j in range(customer_num):
-    customer += []
+    customer.append([])
     customer_str = str("Customer " + str(j) + ": ")
 
     for i in range(wood_num): 
-        customer.append(str(random.randrange(0, 5)))
-        customer_str += customer[j][i] + "      "
+        customer[j].append(random.randrange(0, 5))
+        customer_str += str(customer[j][i]) + "      "
 
     print(customer_str)
 
 #Operations
 print("Pending orders")
+for i in range(customer_num):
+    for j in range(wood_num):
+        if(wood[j] >= customer[i][j]):
+            wood[j] -= customer[i][j]
+            customer[i][j] = 0
+        else:
+            customer[i][j] -= wood[j]
+            wood[j] = 0
 
-#for i in range(customer_num):
-    #for j in range(wood_num):
-        #if(wood_num[j] >= customer[i][j]):
-            #wood_num[j] -= customer[i][j]
-            #customer[i][j] = 0
+    #Decide whether to print or not
+    if wood.count(0) != wood_num:
+        customer_str = str("Customer " + str(i) + ": ")
+
+        for j in range(wood_num):
+            customer_str += str(customer[i][j]) + "      "
+
+        print(customer_str)
