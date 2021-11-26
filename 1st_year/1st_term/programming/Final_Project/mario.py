@@ -15,7 +15,7 @@ class Mario:
 
         #Here we are assuming Mario will be always placed at the first
         #bank at first position and it will have fixed size
-        self.sprite = (1, 112, 0, 16, 16)
+        self.sprite = (0, 0, 112, 16, 16, 12)
         self.direction = dir
 
         #We also assume that Mario will always start with 3 lives
@@ -38,14 +38,11 @@ class Mario:
 
     
     #Approach: connect the first top left to top right and you cannot pass that line
-    def collisions(self, size, prohibited_zones_x):        
+    def collisions(self, size, prohibited_zones_x):
         self.move()
         for i in prohibited_zones_x:
-            if (self.x < i[1]):
-                if(self.x + self.mario_x_size < i[0]):
-                    self.y += 0
-            else:
-                self.y += 1
+            if not (self.x < i[1] and self.x + self.mario_x_size > i[0] and self.y == i[2]):
+                    self.y += 1
 
     #The movement is done to move in the x axis
     def move(self):
