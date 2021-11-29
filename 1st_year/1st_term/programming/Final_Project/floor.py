@@ -9,7 +9,7 @@ class Floor_handler:
         self.size_y = size_of_y
 
         #Sprite of the floor
-        self.sprite = (0, 16, 16, 15, 16)
+        self.sprite = (0, 16, 16, 16, 16)
 
     #This function creates blocks (by programing them)
     #It is used for the floor because it`s faster to develop with a loop
@@ -23,20 +23,20 @@ class Floor_handler:
         final_x = beggining_x + 16
         floor_counter = 0
 
-        self.floor_not_fall.append([beggining_x, final_x, self.floor[0][1]])
+        self.floor_not_fall.append([beggining_x, final_x, self.floor[0][1], "stones"])
 
-        for i in range(len(self.floor)):
+        for i in range(1, len(self.floor)):
             #print(self.floor[i])
             if (final_x == self.floor[i][0]):
-                #print("in", self.floor[i])
-                self.floor_not_fall[floor_counter][1] = self.floor[i][0] + 16
-                final_x = self.floor[i][0] + 16
+                final_x = self.floor[i][0] + self.sprite[3]
+                self.floor_not_fall[floor_counter][1] = final_x
             
-            elif (self.floor[i][0] + 16 == self.floor[i + 1][0]):
-                beggining_x = self.floor[i][0]
-                final_x = beggining_x + 16
+            elif(i < len(self.floor) + 1):
+                if (self.floor[i][0] + self.sprite[3] == self.floor[i + 1][0]):
+                    beggining_x = self.floor[i][0]
+                    final_x = beggining_x + self.sprite[3]
 
-                floor_counter += 1
-                self.floor_not_fall.append([beggining_x, final_x, self.floor[i][1]])
+                    floor_counter += 1
+                    self.floor_not_fall.append([beggining_x, final_x, self.floor[i][1], "stones"])
 
-            print(self.floor_not_fall)
+                print(self.floor_not_fall)

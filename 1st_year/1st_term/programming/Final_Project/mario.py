@@ -1,6 +1,8 @@
+from pyxel import tri
+
 class Mario:
     #This class stores all the information needed for Mario
-    def __init__(self, x:int, y:int, dir:str):
+    def __init__(self, x:int, y:int, dir:str, obstacles:dict):
         #This method creates the Mario object
         #param x the starting x of Mario
         #param y the starting y of Mario
@@ -23,6 +25,10 @@ class Mario:
 
         #This is the size of mario in the x axis
         self.mario_x_size = self.sprite[3]
+        self.mario_y_size = self.sprite[4]
+
+        #This is are the obstales which mario can collide with
+        self.obstacles = obstacles
 
     def accelerate(self, direction: str, size: int, prohibited_zones: list):
         """ This is an example of a method that moves Mario, it receives the
@@ -38,11 +44,24 @@ class Mario:
 
     
     #Approach: connect the first top left to top right and you cannot pass that line
-    def collisions(self, size, prohibited_zones_x):
+    def collisions(self):
+
+        #This function is performed in order to move horizontally while falling
         self.move()
-        for i in prohibited_zones_x:
-            if not (self.x < i[1] and self.x + self.mario_x_size > i[0] and self.y == i[2]):
-                    self.y += 1
+
+        #This algorithm is done to establish the bounds where mario can collide--------------
+        falling = True
+
+        for i in self.obstacles:
+            if self.x < i[1]:
+                if self.x + self.sprite[3] > i[0]:
+                    if self.y + self.sprite[4] == i[2]:
+                        falling = False
+                    
+        if (falling):
+            self.y += 1
+
+        return self.obstacles[3]
 
     #The movement is done to move in the x axis
     def move(self):
@@ -54,6 +73,7 @@ class Mario:
         if(self.acceleration_x < 0):
             self.acceleration_x += 0.25
 
+    #The jump is done to
     def jump(self, user_input):
-        if(user_input == True):
-            self.acceleration_y += 1
+        if (user_input):
+            self.acceleration_y += 8
