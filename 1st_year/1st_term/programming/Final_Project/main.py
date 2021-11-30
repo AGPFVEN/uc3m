@@ -18,4 +18,4 @@ board = Board(frame_width, frame_height)
 pyxel.run(board.update, board.draw)
 
 
-#Mario acelera al saltar ?python -c "import pyxel; print(site.getsitepackages())"
+#Mario acelera al saltar ?python -c "import pyxel; print(site.getsitepackages())

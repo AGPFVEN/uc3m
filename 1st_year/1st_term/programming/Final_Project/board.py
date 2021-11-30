@@ -1,5 +1,6 @@
 from floor import Floor_handler
 from mario import Mario
+from collisionManager import Collision_manager
 import pyxel
 
 class Board:
@@ -10,34 +11,39 @@ class Board:
         self.width = w
         self.height = h
 
-        self.floor_handler = Floor_handler(16, 16)
+        self.collision_manager = Collision_manager()
+        self.floor_handler = Floor_handler(16, 16, self.collision_manager)
 
         #Create all the floor in the window
         self.floor_handler.create_floor(0, self.height - self.floor_handler.sprite[4])
         for i in range(int((int(self.width / 16)) / 2)):
-            self.floor_handler.create_floor(32 + (i * self.floor_handler.sprite[3]), self.height - self.floor_handler.sprite[4])
+            self.floor_handler.create_floor(32 + 16 + (i * self.floor_handler.sprite[3]), self.height - self.floor_handler.sprite[4])
+        self.floor_handler.create_floor(0,self.height - 2 * self.floor_handler.sprite[3])
 
-        self.floor_handler.create_floor_not_fall()
+        #self.collision_manager.create_collider()
 
         # This creates a Mario at the middle of the screen in x and at y = 200
         # facing right
-        self.mario = Mario(self.width / 2, self.height / 2, True, self.floor_handler.floor_not_fall)
+        self.mario = Mario(self.width / 2, self.height / 2, True, self.collision_manager)
         #self.mario = Mario(0,0, True)
 
         print(self.floor_handler.floor)
-        print(self.floor_handler.floor_not_fall)
+        #print(self.floor_handler.floor_not_fall)
 
     def update(self):
         #Here will be th colliders summed in just one list----------REVIEW HOW TO COPY ARRAYS SAFELY
         #NEED TO PUT THE COLLIDERS IN A VARIABLE AND THEN USE IT IN THE INIT OF MARIO ??????
-        self.mario.collisions(self.floor_handler.floor_not_fall)
+        self.mario.obstacles_updater(self.collision_manager)
+        print(self.mario.collisions())
 
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
         elif pyxel.btn(pyxel.KEY_RIGHT):
-            self.mario.accelerate('right', self.width, self.floor_handler.floor_not_fall)
+            self.mario.accelerate('right', self.width, self.collision_manager.collision_list_x)
         elif pyxel.btn(pyxel.KEY_LEFT):
-            self.mario.accelerate('left', self.width, self.floor_handler.floor_not_fall)
+            self.mario.accelerate('left', self.width, self.collision_manager.collision_list_x)
+
+        self.mario.jump(pyxel.btnr(pyxel.KEY_UP))
         
         self.mario.move()
 

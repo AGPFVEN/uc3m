@@ -1,8 +1,9 @@
-from pyxel import tri
+from collisionManager import Collision_manager
+import common_values
 
 class Mario:
     #This class stores all the information needed for Mario
-    def __init__(self, x:int, y:int, dir:str, obstacles:dict):
+    def __init__(self, x:int, y:int, dir:str, collision_manager:Collision_manager):
         #This method creates the Mario object
         #param x the starting x of Mario
         #param y the starting y of Mario
@@ -28,7 +29,10 @@ class Mario:
         self.mario_y_size = self.sprite[4]
 
         #This is are the obstales which mario can collide with
-        self.obstacles = obstacles
+        self.objects = collision_manager.objects_list_x
+    
+    def obstacles_updater(self, collision_manager:Collision_manager):
+        self.objects = collision_manager.objects_list_x
 
     def accelerate(self, direction: str, size: int, prohibited_zones: list):
         """ This is an example of a method that moves Mario, it receives the
@@ -43,25 +47,26 @@ class Mario:
             self.acceleration_x -= 1
 
     
-    #Approach: connect the first top left to top right and you cannot pass that line
+    #Approach: Check if the exists a block  under mario
     def collisions(self):
-
-        #This function is performed in order to move horizontally while falling
-        self.move()
-
-        #This algorithm is done to establish the bounds where mario can collide--------------
+     #This algorithm is done to establish the bounds where mario can collide--------------
         falling = True
+        self.collading_with_mario = ["down"]
 
-        for i in self.obstacles:
-            if self.x < i[1]:
-                if self.x + self.sprite[3] > i[0]:
-                    if self.y + self.sprite[4] == i[2]:
-                        falling = False
-                    
-        if (falling):
+        for i in self.objects:
+            if self.y + self.sprite[4] == i[1] and self.x + self.sprite[3] >= i[0] and self.x <= i[0] + i[3]:
+                falling = False
+                self.collading_with_mario.append(i[2])
+
+            if self.y + self.sprite[4] >= i[1] and self.y <= i[1] + i[4] and (self.x == i[0] + i[3] or self.x + self.sprite[3] == i[0]):
+                self.acceleration_x = 0
+        
+        if (falling and self.acceleration_y  == 0):
+            self.acceleration_y = 0
             self.y += 1
 
-        return self.obstacles[3]
+        print(self.acceleration_x)
+        #return self.collading_with_mario
 
     #The movement is done to move in the x axis
     def move(self):
@@ -73,7 +78,16 @@ class Mario:
         if(self.acceleration_x < 0):
             self.acceleration_x += 0.25
 
+        if(self.acceleration_y != 0):
+            self.y -= common_values.gravity
+
+        if(self.acceleration_y > 0):
+            self.acceleration_y -= 0.25
+        
+        if(self.acceleration_y < 0):
+            self.acceleration_y += 0.25
+
     #The jump is done to
     def jump(self, user_input):
         if (user_input):
-            self.acceleration_y += 8
+            self.acceleration_y -= 8
