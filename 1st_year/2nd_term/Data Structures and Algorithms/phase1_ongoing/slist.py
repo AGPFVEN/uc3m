@@ -45,9 +45,6 @@ class SList:
         
         return "["+result+"]"                               
   
-
-  
-
     def addFirst(self,e):
         """Add a new element, e, at the beginning of the list"""
         newNode=SNode(e)                                

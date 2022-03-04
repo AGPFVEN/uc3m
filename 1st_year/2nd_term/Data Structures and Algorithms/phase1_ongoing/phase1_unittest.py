@@ -8,7 +8,7 @@ Created on Fri Feb  4 13:30:41 2022
 
 import unittest
 import random
-from phase1 import SList2
+import phase1.slist
 
 class Test(unittest.TestCase):
 
@@ -91,44 +91,44 @@ class Test(unittest.TestCase):
         self.assertEqual(result, expected)
         print("\ttestsumLastN7, n=2, OK!!!")
         
-    #def testinsertMiddle_1(self):
-        #print("\n\tinsertMidle1 in an empty list")
-        #l=SList2()
-        #l.insertMiddle(5)
+    def testinsertMiddle_1(self):
+        print("\n\tinsertMidle1 in an empty list")
+        l=SList2()
+        l.insertMiddle(5)
 
-        #expected = [5]
-        #self.assertEqual(str(l), str(expected))
-        #print("\tinsertMidle1 in an empty list, OK")
+        expected = [5]
+        self.assertEqual(str(l), str(expected))
+        print("\tinsertMidle1 in an empty list, OK")
 
 
-    #def testinsertMiddle_2(self):
-        #print("\n\tinsertMidle2 in an non empty even list")
+    def testinsertMiddle_2(self):
+        print("\n\tinsertMidle2 in an non empty even list")
         
-        ##print(str(self.l),self.data)
-        #_size=len(self.l)
-        #_index=_size//2
+        #print(str(self.l),self.data)
+        _size=len(self.l)
+        _index=_size//2
         
-        #e=35 #value to insert
+        e=35 #value to insert
 
-        #self.l.insertMiddle(e)
-        #self.data.insert(_index,e)
+        self.l.insertMiddle(e)
+        self.data.insert(_index,e)
 
 
-        #self.assertEqual(str(self.l), str(self.data))
-        #print("\tinsertMiddle2 in an non-empty even list, OK!!!")
+        self.assertEqual(str(self.l), str(self.data))
+        print("\tinsertMiddle2 in an non-empty even list, OK!!!")
 
-    #def testinsertMiddle_3(self):
-        #print("\n\tinsertMiddle3 in an non-empty odd list")
+    def testinsertMiddle_3(self):
+        print("\n\tinsertMiddle3 in an non-empty odd list")
 
-        #_size = len(self.l2)
-        #_index = _size // 2 + 1
+        _size = len(self.l2)
+        _index = _size // 2 + 1
         
-        #e = 17  # value to insert
+        e = 17  # value to insert
 
-        #self.l2.insertMiddle(e)
-        #self.data2.insert(_index, e)
-        #self.assertEqual(str(self.l2), str(self.data2))
-        #print("\tinsertMiddle3 in an non-empty odd list, OK!!!")
+        self.l2.insertMiddle(e)
+        self.data2.insert(_index, e)
+        self.assertEqual(str(self.l2), str(self.data2))
+        print("\tinsertMiddle3 in an non-empty odd list, OK!!!")
         
     #def testInsertList1(self):
         #print("\n\tinsertList1 start<0")
