@@ -1,4 +1,4 @@
-from phase1.slist import SNode
+from slist import SNode
 from slist import SList
 
 class SList2(SList):
@@ -37,31 +37,52 @@ class SList2(SList):
 
         return result
     
-    #method for inserting a new node in the middle
+    #Method for inserting a new node in the middle
     def insertMiddle(self, elem):
+        #Slist is empty
         if (self._size == 0):
             self.addFirst(elem)
+            return None
 
+        #Select head and create new node
         selected_node = self._head
         new_node = SNode(elem)
 
         #Slist is even
         if (self._size % 2 == 0):
-            for _ in range(1, self._size / 2):
+            for _ in range(1, int(self._size / 2)):
                 selected_node = selected_node.next
 
         #Slist is odd
         else:
-            for _ in range(1, (self._size + 1) / 2):
+            for _ in range(1, int((self._size + 1) / 2)):
                 selected_node = selected_node.next
 
         #Insert new node
-        new_node = selected_node.next
+        new_node.next = selected_node.next
         selected_node.next = new_node
     
     def insertList(self,inputList,start,end):
-        ...
+        #Slist is empty
+        if self._size == 0:
+            for i in inputList:
+                self.addLast(i)
 
+        #Invalid indexes
+        if ((start or end) < self._size) or ((start or end) > self._size) and (start >= end):
+            print("Invalid index")
+            return None
+
+        #Select head
+        start_node = self._head
+
+        #Get to start
+        for _ in range(1, start):
+            start_node = start_node.next
+
+        end_node = start_node
+        for _ in range(1, end):
+            end_node = end_node.next
 
     def reverseK(self,k):
         ...

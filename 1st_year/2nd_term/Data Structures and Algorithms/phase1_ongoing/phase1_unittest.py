@@ -8,7 +8,7 @@ Created on Fri Feb  4 13:30:41 2022
 
 import unittest
 import random
-import phase1.slist
+from phase1 import SList2
 
 class Test(unittest.TestCase):
 
@@ -130,94 +130,94 @@ class Test(unittest.TestCase):
         self.assertEqual(str(self.l2), str(self.data2))
         print("\tinsertMiddle3 in an non-empty odd list, OK!!!")
         
-    #def testInsertList1(self):
-        #print("\n\tinsertList1 start<0")
-        #inputList=SList2()
-        #self.l.insertList(inputList,-1,2)
-        #expected=self.data
-        #self.assertEqual(str(self.l), str(expected))
-        #print("\tinsertList start<0, ok!!!")
+    def testInsertList1(self):
+        print("\n\tinsertList1 start<0")
+        inputList=SList2()
+        self.l.insertList(inputList,-1,2)
+        expected=self.data
+        self.assertEqual(str(self.l), str(expected))
+        print("\tinsertList start<0, ok!!!")
         
-    #def testInsertList2(self):
-        #print("\n\tinsertList2 end>=len(l)")
-        #inputList=SList2()
-        #self.l.insertList(inputList,0,len(self.l))
-        #expected=self.data
-        #self.assertEqual(str(self.l), str(expected))
-        #print("\tinsertList2 end>=len(l), ok!!!")
+    def testInsertList2(self):
+        print("\n\tinsertList2 end>=len(l)")
+        inputList=SList2()
+        self.l.insertList(inputList,0,len(self.l))
+        expected=self.data
+        self.assertEqual(str(self.l), str(expected))
+        print("\tinsertList2 end>=len(l), ok!!!")
         
-    #def testInsertList3(self):
-        #print("\n\tinsertList3 start>end)")
-        #inputList=SList2()
-        #self.l.insertList(inputList,2,1)
-        #expected=self.data
-        #self.assertEqual(str(self.l), str(expected))
-        #print("\n\tinsertList3 start>end), ok!!!")
+    def testInsertList3(self):
+        print("\n\tinsertList3 start>end)")
+        inputList=SList2()
+        self.l.insertList(inputList,2,1)
+        expected=self.data
+        self.assertEqual(str(self.l), str(expected))
+        print("\n\tinsertList3 start>end), ok!!!")
 
-    #def testInsertList4(self):
-        #print("\n\tinsertList4 start=0,end=0")
+    def testInsertList4(self):
+        print("\n\tinsertList4 start=0,end=0")
         
-        #inputList=SList2()
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
+        inputList=SList2()
+        inputList.addFirst(10)
+        inputList.addFirst(10)
+        inputList.addFirst(10)
         
-        #self.l3.insertList(inputList,0,0)
-        #expected=[10,10,10,1,2,3,4]
-        #self.assertEqual(str(self.l3), str(expected))
-        #print("\tinsertList4 start>end), ok!!!")
+        self.l3.insertList(inputList,0,0)
+        expected=[10,10,10,1,2,3,4]
+        self.assertEqual(str(self.l3), str(expected))
+        print("\tinsertList4 start>end), ok!!!")
     
-    #def testInsertList5(self):
-        #print("\n\tinsertList5 start=0,end=len(l)-1")
+    def testInsertList5(self):
+        print("\n\tinsertList5 start=0,end=len(l)-1")
         
-        #inputList=SList2()
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
+        inputList=SList2()
+        inputList.addFirst(10)
+        inputList.addFirst(10)
+        inputList.addFirst(10)
         
-        #self.l3.insertList(inputList,0,len(self.l3)-1)
-        #expected=[10,10,10]
-        #self.assertEqual(str(self.l3), str(expected))
-        #print("\tinsertList5 start=0,end=len(l)-1")
+        self.l3.insertList(inputList,0,len(self.l3)-1)
+        expected=[10,10,10]
+        self.assertEqual(str(self.l3), str(expected))
+        print("\tinsertList5 start=0,end=len(l)-1")
         
-    #def testInsertList6(self):
-        #print("\n\tinsertList6 start=0,end=len(l)//2")
+    def testInsertList6(self):
+        print("\n\tinsertList6 start=0,end=len(l)//2")
         
-        #inputList=SList2()
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
+        inputList=SList2()
+        inputList.addFirst(10)
+        inputList.addFirst(10)
+        inputList.addFirst(10)
         
-        #self.l3.insertList(inputList,0,len(self.l3)//2)
-        #expected=[10,10,10,3,4]
-        #self.assertEqual(str(self.l3), str(expected))
-        #print("\tinsertList6 start=0,end=len(l)//2")
+        self.l3.insertList(inputList,0,len(self.l3)//2)
+        expected=[10,10,10,3,4]
+        self.assertEqual(str(self.l3), str(expected))
+        print("\tinsertList6 start=0,end=len(l)//2")
         
-    #def testInsertList7(self):
-        #print("\n\tinsertList7 start=len(l)//2, end=len(l)-1")
+    def testInsertList7(self):
+        print("\n\tinsertList7 start=len(l)//2, end=len(l)-1")
         
-        #inputList=SList2()
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
+        inputList=SList2()
+        inputList.addFirst(10)
+        inputList.addFirst(10)
+        inputList.addFirst(10)
         
-        #self.l3.insertList(inputList,len(self.l3)//2,len(self.l3)-1)
-        #expected=[0,1,10,10,10]
-        #self.assertEqual(str(self.l3), str(expected))
-        #print("\tinsertList7 start=len(l)//2, end=len(l)-1, ok")
+        self.l3.insertList(inputList,len(self.l3)//2,len(self.l3)-1)
+        expected=[0,1,10,10,10]
+        self.assertEqual(str(self.l3), str(expected))
+        print("\tinsertList7 start=len(l)//2, end=len(l)-1, ok")
         
-    #def testInsertList8(self):
-        #print("\n\tinsertList7 start=1, end=len(l)-2")
+    def testInsertList8(self):
+        print("\n\tinsertList7 start=1, end=len(l)-2")
         
-        #inputList=SList2()
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
-        #inputList.addFirst(10)
+        inputList=SList2()
+        inputList.addFirst(10)
+        inputList.addFirst(10)
+        inputList.addFirst(10)
         
-        #self.l3.insertList(inputList,1,len(self.l3)-2)
-        #expected=[0,10,10,10,4]
-        #self.assertEqual(str(self.l3), str(expected))
-        #print("\tinsertList7 start=1, end=len(l)-2, ok")
+        self.l3.insertList(inputList,1,len(self.l3)-2)
+        expected=[0,10,10,10,4]
+        self.assertEqual(str(self.l3), str(expected))
+        print("\tinsertList7 start=1, end=len(l)-2, ok")
     
     
     #def testMaximumPair1(self):
