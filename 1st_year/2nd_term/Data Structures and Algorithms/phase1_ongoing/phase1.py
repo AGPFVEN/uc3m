@@ -1,3 +1,6 @@
+from ast import LShift
+from matplotlib.pyplot import prism
+from numpy import insert
 from slist import SNode
 from slist import SList
 
@@ -69,20 +72,37 @@ class SList2(SList):
                 self.addLast(i)
 
         #Invalid indexes
-        if ((start or end) < self._size) or ((start or end) > self._size) and (start >= end):
+        if ((start or end) < 0) or ((start or end) > self._size) and (start > end):
             print("Invalid index")
             return None
 
-        #Select head
-        start_node = self._head
+        if(start == 0):
+            self._head = inputList._head
+        else:
+            #Select head
+            selected_node = self._head
 
-        #Get to start
-        for _ in range(1, start):
-            start_node = start_node.next
+            #Get to start
+            while start > 0:
+                selected_node = selected_node.next
+                start -= 1
+                end -= 1
 
-        end_node = start_node
-        for _ in range(1, end):
-            end_node = end_node.next
+            #Attach two slists (beggining)
+            node_carry = selected_node.next
+            selected_node.next = inputList._head 
+
+        #Select final item in slist
+        while selected_node.next != None:
+            selected_node = selected_node.next
+
+        #Attach two list slists (finish)
+        selected_node.next = node_carry
+
+        #Loop to deattach nodes from the list
+        while end > 0:
+            selected_node.next = selected_node.next.next
+            end -= 1
 
     def reverseK(self,k):
         ...
@@ -90,3 +110,16 @@ class SList2(SList):
 
     def maximumPair(self):
         ... 
+
+ls = SList2()
+ls.addFirst(10)
+ls.addFirst(1)
+ls.addFirst(0)
+ls2 = SList2()
+ls2.addFirst(5)
+ls2.addFirst(9)
+ls2.addFirst(4)
+ls2.addFirst(20)
+ls.insertList(ls2, 0, 2)
+
+print(str(ls))
