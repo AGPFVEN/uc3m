@@ -68,32 +68,37 @@ class SList2(SList):
     def insertList(self,inputList,start,end):
         #Slist is empty
         if self._size == 0:
-            for i in inputList:
-                self.addLast(i)
+            self._head = inputList._head
 
         #Invalid indexes
-        if ((start or end) < 0) or ((start or end) > self._size) and (start > end):
+        if ((start or end) < 0) or ((start or end) > self._size) or (start > end):
             print("Invalid index")
             return None
 
-        if(start == 0):
+        #Select head
+        selected_node = self._head
+        changed = False
+
+        if start == 0:
             self._head = inputList._head
+            changed = True
+
+        #Get to start
+        while start - 1 > 0:
+            selected_node = selected_node.next
+            start -= 1
+            end -= 1
+
+        #Attach two slists (beggining)
+        node_carry = selected_node.next
+        if changed == False:
+            selected_node.next = inputList._head
         else:
-            #Select head
             selected_node = self._head
-
-            #Get to start
-            while start > 0:
-                selected_node = selected_node.next
-                start -= 1
-                end -= 1
-
-            #Attach two slists (beggining)
-            node_carry = selected_node.next
-            selected_node.next = inputList._head 
 
         #Select final item in slist
         while selected_node.next != None:
+            print(selected_node.elem)
             selected_node = selected_node.next
 
         #Attach two list slists (finish)
@@ -101,6 +106,7 @@ class SList2(SList):
 
         #Loop to deattach nodes from the list
         while end > 0:
+            print("down")
             selected_node.next = selected_node.next.next
             end -= 1
 
@@ -115,11 +121,13 @@ ls = SList2()
 ls.addFirst(10)
 ls.addFirst(1)
 ls.addFirst(0)
+ls.addFirst(100)
+ls.addFirst(99)
 ls2 = SList2()
 ls2.addFirst(5)
 ls2.addFirst(9)
 ls2.addFirst(4)
 ls2.addFirst(20)
-ls.insertList(ls2, 0, 2)
+ls.insertList(ls2, 0, 3)
 
 print(str(ls))
