@@ -1,9 +1,5 @@
 # from binarysearchtree import BinarySearchTree
-from cgi import print_arguments
-from inspect import trace
-from operator import le
-from tokenize import Double
-from numpy import diff, right_shift
+from sys import setrecursionlimit
 from bst import BinarySearchTree
 from bst import BinaryNode
 
@@ -47,39 +43,44 @@ class AVLTree(BinarySearchTree):
             tree_balanced = AVLTree()
             auxiliar_tree = None
 
-            #Right Rotations
+            #Left Rotations
             if difference_heights > balance_factor:
                 #Simple
                 if self._height(right_original.right) > self._height(right_original.left):
                     tree_balanced._root = right_original
                     tree_balanced._root.left = node
-                    tree_balanced._root.left.right = auxiliar_tree
+                    if node.right != None and node.right.left != None:
+                        print("este")
+                        print(self.search(3))
+                        tree_balanced._root.left.right = right_original.left
+                        tree_balanced._root.left.right.right = None
+                    else:
+                        tree_balanced._root.left.right = None
                 
-                #Doule
+                #Double
                 else:
                     tree_balanced._root = right_original.left
                     auxiliar_tree = right_original.left.left
                     tree_balanced._root.left = node
-                    tree_balanced._root.left.right = right_original.left.left
                     tree_balanced._root.right = node.right
-                    tree_balanced._root.right.left = right_original.left.right
+                    tree_balanced._root.left.right = None
+                    tree_balanced._root.right.left = None
 
-            #Left Rotations
+            #Right Rotations
             else:
                 #Simple
                 if self._height(left_original.left) > self._height(left_original.right):
-                    print("entered")
                     tree_balanced._root = left_original
                     tree_balanced._root.right = node
-                    tree_balanced._root.right.left = left_original.right
+                    tree_balanced._root.right.left = None
 
                 #Double
                 else:
                     tree_balanced._root = left_original.right
                     tree_balanced._root.left = left_original
-                    tree_balanced._root.left.right = left_original.right.left
                     tree_balanced._root.right = node
-                    tree_balanced._root.right.left = left_original.right.right
+                    tree_balanced._root.left.right = None
+                    tree_balanced._root.right.left = None
 
             return tree_balanced._root
         
@@ -89,18 +90,14 @@ class AVLTree(BinarySearchTree):
 
             return node
 
+"""  insert a sorted sequence of numbers """
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 avl = AVLTree()
-"""  insertion, simple right rotation """
-data = [12, 8, 17, 6, 19]
-for n in data:
-    avl.insert(n)
-avl.draw()
+for e in data:
+    avl.insert(e)
+    avl.draw()
 
-# inserting 4 will do 8 unbalance -> right rotation
-avl.insert(4)
-avl.draw()
-
-data = [12, 6, 17, 8, 19, 4]
+data = [4, 2, 6, 1, 3, 5, 8, 7, 9]
 expected = BinarySearchTree()
 for n in data:
     expected.insert(n)
