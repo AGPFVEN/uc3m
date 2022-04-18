@@ -1,5 +1,4 @@
 # from binarysearchtree import BinarySearchTree
-from sys import setrecursionlimit
 from bst import BinarySearchTree
 from bst import BinaryNode
 
@@ -47,15 +46,10 @@ class AVLTree(BinarySearchTree):
             if difference_heights > balance_factor:
                 #Simple
                 if self._height(right_original.right) > self._height(right_original.left):
+                    auxiliar_tree = node.right.left
                     tree_balanced._root = right_original
                     tree_balanced._root.left = node
-                    if node.right != None and node.right.left != None:
-                        print("este")
-                        print(self.search(3))
-                        tree_balanced._root.left.right = right_original.left
-                        tree_balanced._root.left.right.right = None
-                    else:
-                        tree_balanced._root.left.right = None
+                    tree_balanced._root.left.right = auxiliar_tree
                 
                 #Double
                 else:
@@ -70,6 +64,7 @@ class AVLTree(BinarySearchTree):
             else:
                 #Simple
                 if self._height(left_original.left) > self._height(left_original.right):
+                    auxiliar_tree = node.left.right
                     tree_balanced._root = left_original
                     tree_balanced._root.right = node
                     tree_balanced._root.right.left = None
@@ -90,14 +85,18 @@ class AVLTree(BinarySearchTree):
 
             return node
 
-"""  insert a sorted sequence of numbers """
-data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+"""  remove(8), 7 is unbalanced, right rotation with subtrees """
 avl = AVLTree()
-for e in data:
-    avl.insert(e)
-    avl.draw()
+data = [17, 8, 12, 2, 7, 27, 48, 58, 3, 4]
+for n in data:
+    avl.insert(n)
+     avl.draw()
 
-data = [4, 2, 6, 1, 3, 5, 8, 7, 9]
+# we remove 8 (root), it will be replaced with 7
+avl.remove(8)  # root
+avl.draw()
+
+data = [12, 3, 27, 2, 7, 17, 48, 4, 58]
 expected = BinarySearchTree()
 for n in data:
     expected.insert(n)
