@@ -1,0 +1,6 @@
+
+State Machine - |P4|current_state
+Name current_state.state_bit_1 current_state.state_bit_0 
+current_state.amber_state 0 0 
+current_state.green_state 0 1 
+current_state.red_state 1 0 

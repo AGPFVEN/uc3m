@@ -4,7 +4,17 @@ from graph import Graph
 class Graph2(Graph):
     def min_number_edges(self, start: str, end: str) -> int:
         """returns the minimum number of edges from start to end"""
-        ...
+        #Create a dictionary with visited vertices, None at the beginning
+        visited = {}
+
+        for vert in self._vertices.keys():
+            visited[vert] = False
+
+        selected_vertex = self._vertices[start]
+
+        print(visited)
+
+    def 
 
     def transpose(self) -> 'Graph2':
         """ returns a new graph that is the transpose graph of self"""
@@ -42,3 +52,5 @@ undirected_graph.add_edge('D', 'E')
 undirected_graph.add_edge('E', 'F')
 undirected_graph.add_edge('F', 'G')
 print(undirected_graph)
+
+directed_graph.min_number_edges("A", "F")
