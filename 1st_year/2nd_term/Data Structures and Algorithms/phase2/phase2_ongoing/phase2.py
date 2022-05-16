@@ -25,7 +25,7 @@ class AVLTree(BinarySearchTree):
         then remove this node (using super()._remove). After this, the function has to balance the node returned by the function super()._remove"""
         node = super()._remove(node, elem)
         node = self._rebalance(node)
-        return node
+        return node 
 
     def _rebalance(self, node: BinaryNode) -> BinaryNode:
         if node == None:
