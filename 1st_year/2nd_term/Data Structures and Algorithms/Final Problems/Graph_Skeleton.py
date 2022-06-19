@@ -1,221 +1,85 @@
-def compare_lists(list1: list, list2: list) -> bool:
-    if len(list1) != len(list2):
-        return False
-    # we compare both list of vertices
-    for a, b in zip(list1, list2):
-        # print(str(a), str(b))
-        if a != b:
-            return False
-    return True
+class AdjacentVertex:
+    """ This class allows us to represent a tuple
+    with an adjacent vertex
+    and the weight associated (by default None, for non-unweighted graphs)"""
+    def __init__(self, vertex: object, weight: int = 1) -> None:
+        self.vertex = vertex
+        self.weight = weight
 
-class MyGraph:
-    """Implementation of an undirected and unweighted graph"""
+    def __str__(self) -> str:
+        """ returns the tuple (vertex, weight)"""
+        if self.weight is not None:
+            return '(' + str(self.vertex) + ',' + str(self.weight) + ')'
+        else:
+            return str(self.vertex)
 
-    def __init__(self, lst_vertices: list) -> None:
-        """We use a dictionary to save the vertices"""
+class Graph:
+    def __init__(self, vertices: list, directed: bool = True) -> None:
+        """ We use a dictionary to represent the graph
+        the dictionary's keys are the vertices
+        The value associated for a given key will be the list of their neighbours.
+        Initially, the list of neighbours is empty"""
         self._vertices = {}
-        for vertex in lst_vertices:
-            # Each vertex is a key of the dictionary
-            # Its associated value will be the list of its adjacent vertices
-            self._vertices[vertex] = []
+        for v in vertices:
+            self._vertices[v] = []
+        self._directed = directed
 
-    def check_vertex(self, vertex: str) -> bool:
-        """checks if the vertex exists in the graph"""
-        return vertex in self._vertices
-
-    def add_edge(self, v1: str, v2: str) -> None:
-        if not self.check_vertex(v1):
-            print(v1, " is not a vertex!!!")
+    def add_edge(self, start: object, end: object, weight: int = 1) -> None:
+        if start not in self._vertices.keys():
+            print(start, ' does not exist!')
             return
-        if not self.check_vertex(v2):
-            print(v2, " is not a vertex!!!")
-            return
-        if v1 == v2:
-            print("({},{}) loops edges are not allowed!".format(v1, v2))
-            return
-        if v2 in self._vertices[v1] or v1 in self._vertices[v2]:
-            print("({},{}) multiple edges are not allowed!".format(v1, v2))
+        if end not in self._vertices.keys():
+            print(end, ' does not exist!')
             return
 
-        self._vertices[v1].append(v2)
-        self._vertices[v2].append(v1)
+        # adds to the end of the list of neighbours for start
+        self._vertices[start].append(AdjacentVertex(end, weight))
 
-    def __eq__(self, other: 'MyGraph') -> bool:
-        if other is None:
-            return False
+        if not self._directed:
+            # adds to the end of the list of neighbors for end
+            self._vertices[end].append(AdjacentVertex(start, weight))
 
-        self_keys = sorted(list(self._vertices.keys()))
-        other_keys = sorted(list(other._vertices.keys()))
+    def contain_edge(self, start: object, end: object) -> int:
+        """ checks if the edge (start, end) exits. It does
+        not exist return 0, eoc returns its weight or 1 (for unweighted graphs)"""
+        if start not in self._vertices.keys():
+            print(start, ' does not exist!')
+            return 0
+        if end not in self._vertices.keys():
+            print(end, ' does not exist!')
+            return 0
 
-        if not compare_lists(self_keys, other_keys):
-            return False
+        # we search the AdjacentVertex whose v is equal to end
+        for adj in self._vertices[start]:
+            if adj.vertex == end:
+                return adj.weight
 
-        # print(len(self_keys), len(other_keys))
+        return 0  # does not exist
 
-        for vertex in self._vertices.keys():
-            if not compare_lists(sorted(self._vertices[vertex]), sorted(other._vertices[vertex])):
-                return False
+    def remove_edge(self, start: object, end: object):
+        """ removes the edge (start, end)"""
+        if start not in self._vertices.keys():
+            print(start, ' does not exist!')
+            return
+        if end not in self._vertices.keys():
+            print(end, ' does not exist!')
+            return
 
-        return True
+        # we must look for the adjacent AdjacentVertex (neighbour)  whose vertex is end, and then remove it
+        for adj in self._vertices[start]:
+            if adj.vertex == end:
+                self._vertices[start].remove(adj)
+        if not self._directed:
+            # we must also look for the AdjacentVertex (neighbour)  whose vertex is end, and then remove it
+            for adj in self._vertices[end]:
+                if adj.vertex == start:
+                    self._vertices[end].remove(adj)
 
     def __str__(self) -> str:
         """ returns a string containing the graph"""
         result = ''
-        for vertex in self._vertices:
-            result += '\n' + str(vertex) + ': '
-            for adj in self._vertices[vertex]:
-                result += str(adj) + ", "
-            if result.endswith(", "):
-                result = result[:-2]
+        for v in self._vertices:
+            result += '\n'+str(v)+':'
+            for adj in self._vertices[v]:
+                result += str(adj)+"  "
         return result
-
-    def is_connected(self) -> bool:
-        """returns True if the graph is connected, False eoc"""
-        return None
-
-    def is_bridge(self, v1: str, v2: str) -> bool:
-        return None
-
-
-if __name__ == '__main__':
-    # Create a graph: A<->B<->C<->D
-    vertices = ['A', 'B', 'C', 'D']
-    g = MyGraph(vertices)
-    g.add_edge('A', 'B')
-    g.add_edge('B', 'C')
-    g.add_edge('C', 'D')
-    print("First graph: ", str(g))
-    print()
-    print("is_connected()={}\n".format(g.is_connected()))  # True
-    # assert g.is_connected()
-
-    u, v = 'A', 'B'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    u, v = 'B', 'A'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    u, v = 'A', 'C'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # False
-    # assert not g.is_bridge(u, v)
-
-    u, v = 'A', 'D'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # False
-    # assert not g.is_bridge(u, v)
-
-    u, v = 'B', 'C'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    u, v = 'C', 'B'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    u, v = 'B', 'D'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # False
-    # assert not g.is_bridge(u, v)
-
-    u, v = 'C', 'D'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    u, v = 'D', 'C'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    # second graph
-    print('Second graph:')
-    vertices = ['A', 'B', 'C', 'D', 'E']
-    g = MyGraph(vertices)
-    g.add_edge('A', 'B')
-    g.add_edge('A', 'C')
-    g.add_edge('B', 'C')
-    g.add_edge('A', 'D')
-    g.add_edge('D', 'E')
-    print(g)
-
-    print("is_connected()={}\n".format(g.is_connected()))  # True
-    #  assert g.is_connected()
-
-    u, v = 'A', 'B'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # False
-    # assert not g.is_bridge(u, v)
-
-    u, v = 'A', 'C'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # False
-    # assert not g.is_bridge(u, v)
-
-    u, v = 'B', 'C'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # False
-    # assert not g.is_bridge(u, v)
-
-    u, v = 'A', 'D'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    u, v = 'D', 'A'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    u, v = 'D', 'E'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    u, v = 'E', 'D'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # True
-    # assert g.is_bridge(u, v)
-
-    u, v = 'B', 'E'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # False
-    # assert not g.is_bridge(u, v)
-
-    u, v = 'A', 'E'
-    print("is_bridge({},{})={}\n".format(u, v, g.is_bridge(u, v)))  # False
-    # assert not g.is_bridge(u, v)
-
-    print('Third graph:')
-    vertices = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-    g3 = MyGraph(vertices)
-    g3.add_edge('A', 'B')
-    g3.add_edge('B', 'C')
-    g3.add_edge('C', 'D')
-    g3.add_edge('C', 'E')
-    g3.add_edge('D', 'E')
-    g3.add_edge('D', 'F')
-    g3.add_edge('D', 'G')
-    g3.add_edge('E', 'F')
-    print(g3)
-
-    u, v = 'A', 'B'
-    print("is_bridge({},{})={}\n".format(u, v, g3.is_bridge(u, v)))  # True
-    # assert g3.is_bridge(u, v)
-
-    u, v = 'B', 'A'
-    print("is_bridge({},{})={}\n".format(u, v, g3.is_bridge(u, v)))  # True
-    # assert g3.is_bridge(u, v)
-
-    u, v = 'B', 'C'
-    print("is_bridge({},{})={}\n".format(u, v, g3.is_bridge(u, v)))  # True
-    # assert g3.is_bridge(u, v)
-
-    u, v = 'D', 'G'
-    print("is_bridge({},{})={}\n".format(u, v, g3.is_bridge(u, v)))  # True
-    # assert g3.is_bridge(u, v)
-
-    u, v = 'C', 'E'
-    print("is_bridge({},{})={}\n".format(u, v, g3.is_bridge(u, v)))  # False
-    # assert not g3.is_bridge(u, v)
-
-    u, v = 'D', 'F'
-    print("is_bridge({},{})={}\n".format(u, v, g3.is_bridge(u, v)))  # False
-    # assert not g3.is_bridge(u, v)
-
-    u, v = 'D', 'E'
-    print("is_bridge({},{})={}\n".format(u, v, g3.is_bridge(u, v)))  # False
-    # assert not g3.is_bridge(u, v)
-
-    u, v = 'C', 'D'
-    print("is_bridge({},{})={}\n".format(u, v, g3.is_bridge(u, v)))  # False
-    # assert not g3.is_bridge(u, v)
