@@ -49,6 +49,30 @@ class MyGraph2(Graph):
             
         return na
 
+    """The approach is to excute a secondary function to each vertex""" 
+    def breadth_traversal_bfs(self, v:str):
+        #Result returned of the function
+        result = {}
+        result[v] = 0
+
+        #For each vertex
+        for i in self._vertices.keys():
+            visited = []            
+            ...
+
+    def breath_traversal_bfs_(self, v:str, visited:dict):
+        for i in self._vertices[v]:
+            if i.vertex not in visited:
+                if  i.vertex == v:
+                    return 1
+                else:
+                    visited
+                    path_value = self.breath_traversal_bfs_(v, visited)
+            else:
+                return 0
+                
+
+
 first_grapgh = MyGraph2(["A", "B", "C", "D"], True)
 first_grapgh.add_edge("A", "B")
 first_grapgh.add_edge("B", "C")
