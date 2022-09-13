@@ -18,10 +18,12 @@ cat("\n")
 hist(datos_statistics$percentWeeksOnChart)
 boxplot(datos_statistics$percentWeeksOnChart, horizontal = TRUE)
 
+transformed_ <- (datos_statistics$percentWeeksOnChart)^(.15)
+
 #Scatterplot without linear model of percentWeeksOnChart and Loudness
 plot(
     datos_statistics$Loudness,
-    datos_statistics$percentWeeksOnChart,
+    transformed_,
     xlab = "Loudness",
     ylab = "Percentage weeks"
 )

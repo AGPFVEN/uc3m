@@ -1,0 +1,157 @@
+---
+title: "2nd Delivery"
+author: "Eduardo Alarcón & Alfonso Pineda"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Model Fitting.
+
+```{r}
+library(readxl)
+SpotifySongs <- read_excel("songstats.xlsx")
+suppressWarnings(library(summarytools)) 
+energy <- SpotifySongs$energy
+descr(energy)
+
+hist(energy, probability = TRUE, xlab = "Energy")
+curve(dnorm(x, mean(energy), sd(energy)), col="blue", lwd=2, add=TRUE, yaxt="n")
+```
+
+```{r}
+Partition <- hist(energy, plot=FALSE)
+Partition
+
+library(fitdistrplus)
+normalfit <- fitdist(energy, "norm")
+normalfit
+
+CummulativeProbabilities = pnorm(c(-Inf, Partition$breaks[c(-1, -7)], Inf),
+                                 normalfit$estimate[1], normalfit$estimate[2])
+Probabilities = diff(CummulativeProbabilities)
+Expected = length(energy)*Probabilities
+chisq.test(Partition$counts, p=Probabilities)
+
+pchisq(2.5646, 7, lower.tail = FALSE)
+```
+
+```{r}
+library(nortest)
+ad.test(energy)
+cvm.test(energy)
+lillie.test(energy)
+pearson.test(energy)
+sf.test(energy)
+
+plot(normalfit)
+```
+
+# 3. Model fitting for the variable loudness
+
+```{r}
+loud <- SpotifySongs$loudness
+suppressWarnings(library(summarytools)) 
+descr(loud)
+
+hist(loud, probability = TRUE, xlab="Loudness")
+```
+
+
+## 3.2 Fitting a Weibull distribution
+```{r}
+library(fitdistrplus)
+weibullfit <- fitdist(loud, "weibull")
+weibullfit
+
+Partition <- hist(loud, plot=FALSE)
+Partition
+
+CummulativeProbabilities = pweibull(c(Partition$breaks[-7], Inf), weibullfit$estimate[1], weibullfit$estimate[2])
+Probabilities = diff(CummulativeProbabilities)
+Expected = length(loud)*Probabilities 
+chisq.test(Partition$counts, p = Probabilities)
+
+pchisq(7.0467, 6, lower.tail = FALSE)
+plot(weibullfit)
+```
+## 3.3 Fiting Lognormal distribution
+
+```{r}
+library(fitdistrplus)
+lognormalfit <- fitdist(loud, "lnorm") 
+lognormalfit
+
+Partition <- hist(loud, plot = FALSE)
+Partition
+
+CummulativeProbabilities = plnorm(c(Partition$breaks[-7], Inf), lognormalfit$estimate[1], lognormalfit$estimate[2])
+Probabilities = diff(CummulativeProbabilities)
+Expected = length(loud)*Probabilities 
+chisq.test(Partition$counts, p = Probabilities)
+plot(lognormalfit)
+```
+
+It does not seem to be as good as the normal distribution.
+
+
+## 3.4 Fitting a Normal distribution to a transformation of the dataset
+
+```{r}
+library(fitdistrplus)
+normalfit <- fitdistr(sqrt(loud), "normal") 
+normalfit
+
+Partition <- hist(sqrt(loud), plot = FALSE) 
+Partition
+
+CummulativeProbabilities = pnorm(c(-Inf, Partition$breaks[c(-1,-11)], Inf), normalfit$estimate[1], normalfit$estimate[2])
+Probabilities = diff(CummulativeProbabilities)
+Expected = length(loud)*Probabilities 
+chisq.test(Partition$counts, p = Probabilities)
+
+pchisq(9.3823, 7, lower.tail = FALSE)
+
+hist(sqrt(loud),
+probability = TRUE, # histogram has a total area = 1
+xlab = "Loudness", ylim = c(0,0.2))
+curve(dnorm(x, normalfit$estimate[1], normalfit$estimate[2]),
+      col="blue", lwd=2, add=TRUE, yaxt="n")
+```
+
+
+```{r}
+library(nortest) 
+ad.test(sqrt(loud))
+
+cvm.test(sqrt(loud))
+
+lillie.test(sqrt(loud))
+
+pearson.test(sqrt(loud), n.classes = 10)
+
+sf.test(sqrt(loud))
+```
+
+#4. Aplication od the goodness-of-fit
+### Computing using Weibull
+```{r}
+cat("Our data vs a normal distribution ")
+pnorm(60, mean=125.8656, sd=27.0737, lower.tail=FALSE)
+cat("Our data vs a weibull distribution ")
+pweibull(60, shape=1.649592, scale=10.771187, lower.tail=FALSE)
+
+```
+
+### Computation using the Normal model applied to the square- root of the variable
+```{r}
+pnorm(sqrt(60), mean = 2.96006217, sd =  0.87631623 , lower.tail = FALSE)
+
+plot(ecdf(loud))
+lines(0:130, pweibull(0:130, shape = 1.649592, scale = 10.771187), col="red") 
+lines(0:130, pnorm(sqrt(0:130), mean = 125.8656, sd = 27.0737), col="blue")
+
+```
