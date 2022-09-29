@@ -10,7 +10,7 @@ main:
     jal ra string_compare 	#Invoke        
 
 string_compare:
-    #------------Question-------------------
+    #------------Question------------------- dentro de string compare
     #Do the solution of the problem of the exercise (-1 result) has to be inside
     #of the subroutine or can it be tested before entering the subroutine
 
@@ -35,9 +35,9 @@ not_equal:
     li a0, 0						#If it's not equal result = 0
     
 end:
-    #Why can't I use
-    #jr ra -------------here-------------
+    #Why can't I use need t break the loop using syscall 10 (exit)
+    jr ra #-------------here-------------
 
     #Print result
-    li  a7, 1
-    ecall
+    #li  a7, 1
+    #ecall
