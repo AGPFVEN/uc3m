@@ -2,5 +2,6 @@
 #include<stdlib.h>
 
 int main(int argc, char[] argv){
-	
+	int fd;
+	fd = open("t1.txt");
 }
