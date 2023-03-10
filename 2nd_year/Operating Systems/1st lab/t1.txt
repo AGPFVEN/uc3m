@@ -1,0 +1,2 @@
+This is a test for the first lab1
+pruba 0.1
