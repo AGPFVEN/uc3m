@@ -1,0 +1,244 @@
+Archive:  /tmp/os/os_p1_100472175_100472157_100460314.zip
+  inflating: /tmp/os/Makefile        
+  inflating: /tmp/os/mywc.c          
+  inflating: /tmp/os/myenv.c         
+  inflating: /tmp/os/myls.c          
+  inflating: /tmp/os/authors.txt     
+CHECKER: correcting os_p1_100472175_100472157_100460314.zip
+CHECKER: NIA 1 100472175 NIA 2 100472157 NIA 3 100460314
+CHECKER: decompressing
+MYWC CHECKER. Expected output:
+0 1 5 /tmp/os/f_aes.txt
+
+MYWC CHECKER. Program output:
+0 1 5 /tmp/os/f_aes.txt
+
+MYWC CHECKER. CORRECT TEST
+MYWC CHECKER. Expected output:
+0 0 0 /tmp/os/f_empty.txt
+
+MYWC CHECKER. Program output:
+0 0 0 /tmp/os/f_empty.txt
+
+MYWC CHECKER. CORRECT TEST
+MYWC CHECKER. Expected output:
+255
+MYWC CHECKER. Program output:
+255
+MYWC CHECKER. CORRECT TEST
+MYWC CHECKER. Expected output:
+255
+MYWC CHECKER. Program output:
+255
+MYWC CHECKER. CORRECT TEST
+MYENV CHECKER. INCORRECT TEST. Outputs differ
+MYENV CHECKER. INCORRECT TEST. Outputs differ
+MYENV CHECKER. INCORRECT TEST. Outputs differ
+MYENV CHECKER. Expected output:
+255
+MYENV CHECKER. Program output:
+255
+MYENV CHECKER. CORRECT TEST
+MYLS CHECKER. Expected output:
+authors.txt
+Makefile
+.
+os_p1_100472175_100472157_100460314.zip
+myenv.c
+env.txt
+mywc.c
+myenv
+f_empty.txt
+myls.c
+f_aes.txt
+mywc
+..
+dirC
+dirA
+myls
+
+MYLS CHECKER. Program output:
+authors.txt
+Makefile
+.
+os_p1_100472175_100472157_100460314.zip
+myenv.c
+env.txt
+mywc.c
+myenv
+f_empty.txt
+myls.c
+f_aes.txt
+mywc
+..
+dirC
+dirA
+myls
+
+MYLS CHECKER. CORRECT TEST
+MYLS CHECKER. Expected output:
+authors.txt
+Makefile
+.
+os_p1_100472175_100472157_100460314.zip
+myenv.c
+env.txt
+mywc.c
+myenv
+f_empty.txt
+myls.c
+f_aes.txt
+mywc
+..
+dirC
+dirA
+myls
+
+MYLS CHECKER. Program output:
+authors.txt
+Makefile
+.
+os_p1_100472175_100472157_100460314.zip
+myenv.c
+env.txt
+mywc.c
+myenv
+f_empty.txt
+myls.c
+f_aes.txt
+mywc
+..
+dirC
+dirA
+myls
+
+MYLS CHECKER. CORRECT TEST
+MYLS CHECKER. Expected output:
+255
+MYLS CHECKER. Program output:
+255
+MYLS CHECKER. CORRECT TEST
+1 1 1 1 0 0 0 1 1 1 1 
+Grade:  7.272800000000002
+Archive:  /tmp/os/os_p1_100472175_100472157_100460314.zip
+  inflating: /tmp/os/Makefile        
+  inflating: /tmp/os/mywc.c          
+  inflating: /tmp/os/myenv.c         
+  inflating: /tmp/os/myls.c          
+  inflating: /tmp/os/authors.txt     
+CHECKER: correcting os_p1_100472175_100472157_100460314.zip
+CHECKER: NIA 1 100472175 NIA 2 100472157 NIA 3 100460314
+CHECKER: decompressing
+MYWC CHECKER. Expected output:
+0 1 5 /tmp/os/f_aes.txt
+
+MYWC CHECKER. Program output:
+0 1 5 /tmp/os/f_aes.txt
+
+MYWC CHECKER. CORRECT TEST
+MYWC CHECKER. Expected output:
+0 0 0 /tmp/os/f_empty.txt
+
+MYWC CHECKER. Program output:
+0 0 0 /tmp/os/f_empty.txt
+
+MYWC CHECKER. CORRECT TEST
+MYWC CHECKER. Expected output:
+255
+MYWC CHECKER. Program output:
+255
+MYWC CHECKER. CORRECT TEST
+MYWC CHECKER. Expected output:
+255
+MYWC CHECKER. Program output:
+255
+MYWC CHECKER. CORRECT TEST
+MYENV CHECKER. INCORRECT TEST. Outputs differ
+MYENV CHECKER. INCORRECT TEST. Outputs differ
+MYENV CHECKER. INCORRECT TEST. Outputs differ
+MYENV CHECKER. Expected output:
+255
+MYENV CHECKER. Program output:
+255
+MYENV CHECKER. CORRECT TEST
+MYLS CHECKER. Expected output:
+authors.txt
+Makefile
+.
+os_p1_100472175_100472157_100460314.zip
+myenv.c
+env.txt
+mywc.c
+myenv
+f_empty.txt
+myls.c
+f_aes.txt
+mywc
+..
+dirC
+dirA
+myls
+
+MYLS CHECKER. Program output:
+authors.txt
+Makefile
+.
+os_p1_100472175_100472157_100460314.zip
+myenv.c
+env.txt
+mywc.c
+myenv
+f_empty.txt
+myls.c
+f_aes.txt
+mywc
+..
+dirC
+dirA
+myls
+
+MYLS CHECKER. CORRECT TEST
+MYLS CHECKER. Expected output:
+authors.txt
+Makefile
+.
+os_p1_100472175_100472157_100460314.zip
+myenv.c
+env.txt
+mywc.c
+myenv
+f_empty.txt
+myls.c
+f_aes.txt
+mywc
+..
+dirC
+dirA
+myls
+
+MYLS CHECKER. Program output:
+authors.txt
+Makefile
+.
+os_p1_100472175_100472157_100460314.zip
+myenv.c
+env.txt
+mywc.c
+myenv
+f_empty.txt
+myls.c
+f_aes.txt
+mywc
+..
+dirC
+dirA
+myls
+
+MYLS CHECKER. CORRECT TEST
+MYLS CHECKER. Expected output:
+255
+MYLS CHECKER. Program output:
+255
+MYLS CHECKER. CORRECT TEST
+1 1 1 1 0 0 0 1 1 1 1 
+Grade:  7.272800000000002
