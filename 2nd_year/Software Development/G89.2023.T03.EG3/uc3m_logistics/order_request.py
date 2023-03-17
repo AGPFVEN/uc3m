@@ -65,3 +65,5 @@ class OrderRequest:
     def zip_code( self ):
         """Returns the patient's zip_code"""
         return self.__zip_code
+
+print(OrderRequest(8421691423220, "PREMIUM", "C/Taumatawhakatangihangakoauauotamateaturipukakapikimaungahoronukupokaiwhe, Hawke's Bay, New Zealand", "+34123456789", "28005").order_id)
