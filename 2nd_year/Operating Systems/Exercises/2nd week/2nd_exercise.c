@@ -1,6 +1,4 @@
 #include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
 
 int switch_integers(int *pointer, int *pointer2){
 	printf("Inside switch_integers\n");
