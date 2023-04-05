@@ -131,6 +131,33 @@ int main(int argc, char* argv[])
 			else {
 				// Print command
 				print_command(argvv, filev, in_background);
+
+				int fd[2];
+				pid_t pid = fork();
+
+				switch (pid) {
+				case -1: //Error
+					perror("fork");	
+					exit(-1);
+
+				case 0: //Child process
+					//Pipe Handling
+					close(fd[0]);
+					close(STDOUT_FILENO);
+					dup(fd[1]);
+					close(fd[1]);
+
+					//Execute commend
+					execvp(*argvv[0], *argvv);
+
+				default: //Parent process
+				 	//Pipe Handling
+					close(STDOUT_FILENO);
+					dup(fd[0]);
+					close(fd[0]);
+					wait();
+
+				}
 			}
 		}
 	}
