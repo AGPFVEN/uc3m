@@ -129,34 +129,52 @@ int main(int argc, char* argv[])
 				printf("Error: Maximum number of commands is %d \n", MAX_COMMANDS);
 			}
 			else {
+				printf("this is the 2st: %d\n", command_counter);
 				// Print command
 				print_command(argvv, filev, in_background);
 
-				int fd[2];
-				pid_t pid = fork();
+				//for (int i = 0; i == command_counter; i++) {
+					//Easy Commands
+					int fd[2], status;
+					if (pipe(fd) == -1) {
+						perror("pipe");
+						exit(EXIT_FAILURE);
+					}
 
-				switch (pid) {
-				case -1: //Error
-					perror("fork");	
-					exit(-1);
+					pid_t pid = fork();
 
-				case 0: //Child process
-					//Pipe Handling
-					close(fd[0]);
-					close(STDOUT_FILENO);
-					dup(fd[1]);
-					close(fd[1]);
+					switch (pid) {
+						case -1: //Error
+							perror("fork");	
+							exit(-1);
 
-					//Execute commend
-					execvp(*argvv[0], *argvv);
+						case 0: //Child process
+							//Pipe Handling
+							close(fd[0]);
+							close(STDOUT_FILENO);
+							dup(fd[1]);
+							close(fd[1]);
 
-				default: //Parent process
-				 	//Pipe Handling
-					close(STDOUT_FILENO);
-					dup(fd[0]);
-					close(fd[0]);
-					wait();
+							//Execute commend
+							execvp(argvv[0][0], argvv[0]);
 
+							//Error case lines
+							perror("execvp");
+							exit(-1);
+
+						default: //Parent process
+				 			//Pipe Handling
+							close(STDOUT_FILENO);
+							dup(fd[0]);
+							close(fd[0]);
+
+							//Background for simple commands
+							if (in_background) {
+								waitpid(pid, &status, 0);
+							} else {
+								wait(NULL);
+							}
+					//}
 				}
 			}
 		}
