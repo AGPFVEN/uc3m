@@ -1,0 +1,45 @@
+pip install -r requierements.txt
+
+create python virtual environment
+
+build and test ?
+
+purpose errors may include: repetition, long classes/functions, etc
+
+is not needed to create more tests
+
+2 easy points in part part 1, section 3
+
+not long comments
+
+avoid duplication, create functions
+
+make sure a function does only one thing
+
+small commits
+
+upload an xml with the correct execution of the test cases to github
+
+singleton is the solution to the problem of multiple objects with the same configuration (default)
+
+from easiest and smallest refactors (names) to the bigger ones (shorten functions)
+
+refactoring guru (recommended website to be guided)
+
+it's good practice to create object methods from the operations made inside the object
+
+pyb run_unit_tests to run all tests
+
+orderManager should only have 3 functions (the rest should be independent, for example creating other objects)
+
+until next session (eliminate mysterious names, create methods for validations, move validations to the orderRequest and __ classes)
+
+validations are just methods that only check if the data is correct (need to see the code)
+
+create an attribute file (attribute.py), using the  abstract method decorator, in order to create a blueprint to create attribute validator files
+
+repetition and validation is a 6/10, after that we need to decide if we want to create a class for storing the values of the class
+
+if we have two functions too similar create a general one and make the precisions necessary.
+
+get ready the attributes and at last one store
