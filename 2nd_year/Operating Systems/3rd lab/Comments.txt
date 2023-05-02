@@ -1,0 +1,42 @@
+Rules:
+    only usable:
+        pthread_create
+        pthread_join
+        pthread_exit
+    
+    For synchronization:
+        mutex
+        conditional variables
+
+Tasks:
+    Operations (CREATE, DEPOSIT, WITHDRAW, BALANCE, TRANSFER)
+
+    Bank (Main thread):
+        1. Read input
+        2. Create ATMs and Workers
+        3. Create global variables 
+            client_numop (initialized to zero, increment when customer perform operation)
+            bank_numop (initialized to zero, increment when worker perform operation)
+            global_balance (initialized to zero, updated with operations performed, can be positive or negative)
+        4. list_client_ops (loading list of operations, from file into memmory)
+        5. Launch ATMs and Workers
+        6. Wait for completition
+
+    ATM (function executed by threads, reads operations from files, add element to circular queue)
+        1. Obtain operations from list_client_ops
+        2. Increment client_numop
+        3. insert operation in circular queue
+        4. This must be concurrent with the other ATMs and workers
+
+    Worker (function executed by threads, extract elements from circualr queue, perform action)
+        1. Increment bank_numop
+        2. Exctract operation from queue with that numfa-border
+        3. For each extracted element perform the operation
+        4. Print (type of operation, parameters and bank balance)
+        5. once all customer operations have been proccessed, each thread will end its execution
+
+./bank <file name> <num ATMs> <num workers> <max accounts> <buff size>
+
+./testing os_p3_multithread_2023/file.txt 3 3 3 1000
+
+Resume: How 
