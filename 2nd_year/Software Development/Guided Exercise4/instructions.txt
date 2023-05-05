@@ -1,3 +1,28 @@
+second class
+
+when an object is created in python there's an object request which is stored in a memory address (if we create more objects it does the same), imagine that an object needs a list or some data or an inheritance case, that's what singelton does, that different instances point to the same memory address that the object is referencing, this is mostly done to maintain the state of a certain component.
+
+we should include a singleton pattern to the manager because we need only one instance of the order_Manager.
+
+we should also do it with stores because of the inheritance with the JSON Stores abstract classes.
+
+we can Implement it with two different approaches, as the assignment description, class
+
+see refactoring guru (veeeeeery important)
+
+create test file, we need to test all the singleton instances
+
+if the sigleton tests are correct but raise errors because of a problem
+
+singleton must work,if not they will penalize a lot
+
+for extra points we can use magic strings (constants/enum library)
+enum for exception messages (edge prompt)
+
+models are order requests
+
+.-----------------------------------
+
 pip install -r requierements.txt
 
 create python virtual environment

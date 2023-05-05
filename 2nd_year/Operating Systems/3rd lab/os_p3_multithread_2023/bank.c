@@ -49,6 +49,9 @@ int main (int argc, const char * argv[] ) {
 
     char str = addr[0];
 
+    //for (int i = 0; i < st.st_size; i++) {
+    printf("%s", addr);
+
     printf("%d\n", str);
 
     return 0;

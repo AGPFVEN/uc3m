@@ -1,0 +1,25 @@
+Tasks:
+    1. Eliminate all of the second lab
+    2. Use scripts 
+        2.1 createDB_2023.sql
+        2.2 insert2023-errors_fixed.sql
+
+    3. tracks definition table will be modified
+        3.1 Add column searchk
+        3.2 Add column lyrics
+
+    4. Analize
+        4.1 Initial physical design
+        4.2 Nature of operations to be executed
+        4.3 Execution plan of each operation
+        4.4 Average costs calculated over several runs
+
+    5. Design physical design (parts of the redesing may requiere rebuilding part of the system)
+        Goals:
+            Reduce accesses to secondary storage
+            Global running time
+        Mandatory:
+            Add 1 cluster
+            Add 1 index
+
+        It is adventageus to put in the report non-benefitial builds (but do not put it in the final build)

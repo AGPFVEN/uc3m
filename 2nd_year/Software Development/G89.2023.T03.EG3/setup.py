@@ -23,7 +23,7 @@ if __name__ == '__main__':
         name = 'GE3_2023',
         version = '1.0.dev0',
         description = '',
-        long_description = 'GE3_2023',
+        long_description = 'GE3_2024',
         long_description_content_type = None,
         classifiers = [
             'Development Status :: 3 - Alpha',

@@ -39,4 +39,5 @@ Tasks:
 
 ./testing os_p3_multithread_2023/file.txt 3 3 3 1000
 
-Resume: How 
+DOING: Bank (1)
+Resume: How can I read each line of the file ?
