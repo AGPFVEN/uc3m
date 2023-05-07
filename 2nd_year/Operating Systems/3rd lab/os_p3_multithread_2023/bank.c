@@ -47,12 +47,22 @@ int main (int argc, const char * argv[] ) {
     //Close file
     close(fd);
 
-    char str = addr[0];
+    //String and char to read file
+    char file_reader = addr[0];
+    char *command_reader;
 
-    //for (int i = 0; i < st.st_size; i++) {
-    printf("%s", addr);
+    command_reader = (char*) malloc(st.st_size);
 
-    printf("%d\n", str);
+    //Find out number of commands
+    int number_of_commands;
 
+    for (int i = 0; file_reader != '\n'; i++) {
+        file_reader = addr[i];
+        printf("%c", file_reader);
+    }
+
+
+
+    printf("\n");
     return 0;
 }
