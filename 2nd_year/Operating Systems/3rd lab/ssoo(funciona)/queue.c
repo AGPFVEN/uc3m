@@ -31,7 +31,9 @@ int queue_empty(queue *q) {
 }
 
 int queue_full(queue *q) {
+  //printf("%d", q->elements_in);
   if (q->elements_in == q->size) {
+    //printf("lleno\n\n");
     return 1;
   }
   return 0;
@@ -41,10 +43,11 @@ int queue_full(queue *q) {
 int queue_put(queue *q, struct element *x) {
   int next;
   next = q->front + 1;
-  //if (next == q->size) {
-    //next = 0;
-  //}
-  if ((q->elements_in) == q->size) {
+  
+  if (next == q->size) {
+    next = 0;
+  }
+  if (q->elements_in == q->size) {
     return -1;
   }
   q->elements_in = q->elements_in + 1;
@@ -62,7 +65,7 @@ struct element *queue_get(queue *q) {
   //printf("Testing before ...\n");
   element = &(q->data[q->back]);
   if (q->back + 1 == q->size) {
-    q->front = 0;
+    q->back = 0;
   } else {
     q->back++;
   }
