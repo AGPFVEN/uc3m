@@ -7,14 +7,16 @@ int main(int argc, char *argv[]){
 
 	char string[] = "This is four";  //This is an example string of length 12
 	char string_copy[8];
-	// This is waht the professor did
-	printf("Length of string: %lu\nNumber of positions in the array: %lu\n", sizeof(string), sizeof(string)/sizeof(char));
 
+	// This is waht the professor did
+	printf("Length of string: %lu\nNumber of positions in the array: %lu\nContent of string: %s\n",
+		sizeof(string), sizeof(string)/sizeof(char), string);
 	printf("Length of string using strlen: %lu\n\n", strlen(string));
+
 	strcpy(string, "Hi Anna");
 	printf("After strcpy\n");
 	printf("Length of string: %lu\nNumber of positions in the array: %lu\n", sizeof(string), sizeof(string)/sizeof(char));
-	printf("Length of string using strlen: %lu\n\n", strlen(string));
+	printf("Length of string using strlen: %lu\n", strlen(string));
 	
 	
 	//This is my try 
