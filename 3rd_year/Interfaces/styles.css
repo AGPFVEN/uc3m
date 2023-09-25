@@ -1,0 +1,24 @@
+.grid1_item1 { grid-area: video; }
+.grid1_item2 { grid-area: link1; }
+.grid1_item3 { grid-area: link2; }
+.grid1_item4 { grid-area: link3; }
+.grid1_item5 { grid-area: titulo1; }
+.grid1_item6 { grid-area: titulo2; }
+.grid1_item7 { grid-area: titulo3; }
+
+.grid1-container {
+  display: grid;
+  grid-template-areas:
+    'video link1 link2'
+    'video link3 titulo1'
+    'video titulo2 titulo3';
+  gap: 10px;
+  padding: 10px;
+}
+
+.grid1-container > div {
+  background-color: rgba(24, 29, 177, 0.8);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}
