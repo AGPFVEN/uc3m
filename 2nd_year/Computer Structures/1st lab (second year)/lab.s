@@ -7,8 +7,17 @@
     ecall
 
     e: #Until 6
-    li t0, 0            #E counter
-    li t1, 0            #E result
+    li t0, 1            #E counter
+    li t1, 1            #E j
+    li t2, 0            #E result 
+    
+    fcvt.s.w f0, a0     #Convert to float32
+    fcvt.s.w f1, a1
+
+    fdiv.s f2, f0, f1
+
+    e_loop:
+    
     
     factorial:          #Recives (a0) Uses (t01) Return (a0)
     li t0, 0            #Factorial Counter
