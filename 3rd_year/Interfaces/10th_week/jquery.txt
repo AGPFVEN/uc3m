@@ -1,0 +1,17 @@
+Jquery se declara arriba antes que el resto de librerías
+$ para referirse a jquery $("section").addClass("Myclass") añade la clase a todas las section
+cuando se itera un objeto de jquery -> $("section")[0] returnea el elemento del dom
+se puede hacer $($("section")[0]).append("<p>Text</p>) por ejemplo
+
+p.style.color = blue;
+p.style.background = beige;
+
+Es posible cambiar el css con javascript
+$(p).css("color", "blue").css("background-color", "beige");
+$(p).css({color: "blue", "background-color": "beige"}); esta opción es más limpia
+
+jquery user interface
+$("body").tabs();
+ir cambiando el src para el carrucel
+
+setInterval(function(){}, 1000) ejecutar función cada cierto timepo

@@ -1,0 +1,6 @@
+Todo dentro de un .sh
+
+conectarse a avignon:
+$ ssh -l usuario avignon.lab.inf.uc3m.es
+usuario = a0472157
+usuario@avignon.lab.inf.uc3m.es’s password:

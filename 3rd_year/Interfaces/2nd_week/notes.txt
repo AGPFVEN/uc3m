@@ -1,0 +1,9 @@
+Button.addEventListener(“click”, changes);
+
+Function changes(){
+ 
+}
+
+Button
+
+data-att no sobreescribe atributos

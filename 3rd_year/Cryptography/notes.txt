@@ -1,0 +1,8 @@
+json represents a database
+where you can see the public key of all the users but only you have your own private key (locally)
+documentos .pem los tiene cada usuario en su ordenador (local)
+data.json es la representación de lo que debería ser almacenado en una base de datos
+
+TODO:
+numero de grupo 31
+Usar AES o Fernet para mensajes

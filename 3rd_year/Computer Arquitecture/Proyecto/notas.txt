@@ -1,0 +1,21 @@
+Que hay que hacer:
+    Crear bloques
+    posicionar particulas en bloques
+
+Preguntar a profe:
+    vector o array ?
+        revisar despues de preguntar:
+            getposblock
+
+Preguntar a grupo:
+    discutir variables para bloques 
+    logica de partículas
+
+Para build:
+cmake -S . -B prueba-re -DCMAKE_BUILD_TYPE=Release
+
+Para compilar:
+cmake --build prueba-re/
+
+Para ejecutar:
+prueba-re/fluid/fluid 1000 prueba-re/fluid/small.fld prueba-re/fluid/final.fld

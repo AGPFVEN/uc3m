@@ -1,0 +1,8 @@
+Preguntas:
+    De proyecto 1:
+        Etiqueta semántica
+    De proyecto 2:
+        Tunear registro:
+            Como arreglo cancel del registro de usuarios
+            Colores
+            Tamaños
