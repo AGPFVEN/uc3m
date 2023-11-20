@@ -1,6 +1,7 @@
 import hashlib
 import json
 import rsa
+import sys
 
 #Función recurrente
 def username_used(users, usr_statement):
@@ -33,8 +34,6 @@ def register_user():
     with open(usr + ".pem", "wb") as f:
         f.write(private_key.save_pkcs1("PEM"))
         f.close()
-    #k = public_key.save_pkcs1("PEM").hex
-    #kk = bytes.fromhex(k)
 
     #Añadir nuevo usuario
     data["users"].append({"username": usr, "password": usrPassword.hex(), "public_key": public_key.save_pkcs1("PEM").hex()})
@@ -47,7 +46,7 @@ def register_user():
     main()
 
 def access_user():
-    #Abrir usuarios para checkear posobles repeticiones
+    #Abrir usuarios para checkear que el usuario existe
     with open("data.json") as read_file:
         data = json.load(read_file)
         read_file.close()
@@ -64,12 +63,14 @@ def access_user():
             else:
                 print("Contraseña incorrecta serás redirigido al menú principal")
                 main()
+                sys.exit()
 
 
     #Si usuario no existe ir al menú principal
     if access_password == "":
         print("Nombre de usuario no existe, serás redirigido al menú principal")
         main()
+        sys.exit()
 
 #Post, see intended, see message
 def user_action(active_user:str):
@@ -92,6 +93,7 @@ def user_action(active_user:str):
         create_message(active_user)
     elif(x == "4"):
         main()
+        sys.exit()
 
 #Posible mejora, mensajes con sender público y privado
 def create_message(sender):
@@ -167,8 +169,7 @@ def main():
     print("Presiona 2 para acceder a un usuario")
     print("Presiona 3 para salir de la aplicación")
 
-    x = input("Number pressed: ")
-    print("")
+    x = input("Number pressed: \n")
     while (x != "1" and x != "2" and x != "3"):
         x = input("Número inválido, purba de nuevo: ")
     if (x == "1"):
@@ -176,8 +177,9 @@ def main():
     elif(x == "2"):
         access_user()
     elif(x == "3"):
-        exit()
+        sys.exit()
 
 if __name__ == "__main__":
     print("Bienvenido al programa de Cryptografía")
     main()
+    sys.exit()
