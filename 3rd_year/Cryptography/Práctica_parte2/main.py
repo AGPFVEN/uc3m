@@ -1,6 +1,9 @@
 import hashlib
 import json
 import rsa
+import sys
+
+from cryptography.fernet import Fernet
 
 #Función recurrente
 def username_used(users, usr_statement):
@@ -33,8 +36,6 @@ def register_user():
     with open(usr + ".pem", "wb") as f:
         f.write(private_key.save_pkcs1("PEM"))
         f.close()
-    #k = public_key.save_pkcs1("PEM").hex
-    #kk = bytes.fromhex(k)
 
     #Añadir nuevo usuario
     data["users"].append({"username": usr, "password": usrPassword.hex(), "public_key": public_key.save_pkcs1("PEM").hex()})
@@ -45,9 +46,10 @@ def register_user():
 
     #Go to the main page
     main()
+    sys.exit()
 
 def access_user():
-    #Abrir usuarios para checkear posobles repeticiones
+    #Abrir usuarios para checkear que el usuario existe
     with open("data.json") as read_file:
         data = json.load(read_file)
         read_file.close()
@@ -64,12 +66,14 @@ def access_user():
             else:
                 print("Contraseña incorrecta serás redirigido al menú principal")
                 main()
+                sys.exit()
 
 
     #Si usuario no existe ir al menú principal
     if access_password == "":
         print("Nombre de usuario no existe, serás redirigido al menú principal")
         main()
+        sys.exit()
 
 #Post, see intended, see message
 def user_action(active_user:str):
@@ -92,6 +96,7 @@ def user_action(active_user:str):
         create_message(active_user)
     elif(x == "4"):
         main()
+        sys.exit()
 
 #Posible mejora, mensajes con sender público y privado
 def create_message(sender):
@@ -111,14 +116,23 @@ def create_message(sender):
         if (destination_publicKey == ""):
             destination_username = input("Destinatario no existente, prueba otro: ")
 
-    #Escribir y encriptar mensaje
-    encrypted_message = rsa.encrypt(input("Contenido del mensaje: ").encode(), rsa.PublicKey.load_pkcs1(bytes.fromhex(destination_publicKey)))
+    #Encriptar mensaje con Fernet
+    fernet_key = Fernet.generate_key()
+    fernet_object = Fernet(fernet_key)
+    encrypted_message = fernet_object.encrypt(input("Contenido del mensaje: ").encode())
+    print("Mensaje encriptado: ", encrypted_message)
+
+    #Encriptar la llave de fernet con RSA
+    encrypted_fernet_key = rsa.encrypt(fernet_key, rsa.PublicKey.load_pkcs1(bytes.fromhex(destination_publicKey)))
+    print("Llave de Fernet encriptada con RSA: ", encrypted_fernet_key)
+
+    #Modificar JSON
     data["mensajes"].append({
         "ID": data["mensajes"][-1]["ID"] + 1,
-        "Intended_to": destination_username,
-        "mensaje": encrypted_message.hex()
+        "para": destination_username,
+        "mensaje": encrypted_message.hex(),
+        "llave": encrypted_fernet_key.hex()
     })
-    print("Mensaje encriptado: ", encrypted_message)
 
     #sobreescribir JSON
     with open("data.json", "w") as json_file:
@@ -136,7 +150,7 @@ def see_user_messages(sender):
 
     print("Estos son los IDs de los mensajes que son para ti: ")    
     for i in data["mensajes"]:
-        if sender == i["Intended_to"]:
+        if sender == i["para"]:
             print(i["ID"])
 
     #Volver a menú selección de acciones
@@ -156,10 +170,16 @@ def decrypt_message(sender):
     #Obtener mensaje del json
     for i in data["mensajes"]:
         if int(message_id) == i["ID"]:
+            #Desencriptar llave 
+            encrypted_key = i["llave"]
+            print("Llave encriptado: " + encrypted_key)
             encrypted_message = i["mensaje"]
             print("Mensaje encriptado: " + encrypted_message)
     
-    print("Mensaje desencriptado: " + rsa.decrypt(bytes.fromhex(encrypted_message), rsa.PrivateKey.load_pkcs1(open(sender + ".pem", "rb").read())).decode())
+    decrypted_key = rsa.decrypt(bytes.fromhex(encrypted_key), rsa.PrivateKey.load_pkcs1(open(sender + ".pem", "rb").read()))
+    print("Llave desencriptada: " + decrypted_key.decode())
+    cipher_suite = Fernet(decrypted_key)
+    print("Mensaje desencriptado: " + cipher_suite.decrypt(bytes.fromhex(encrypted_message)).decode() + "\n")
     user_action(sender)
 
 def main():
@@ -167,8 +187,7 @@ def main():
     print("Presiona 2 para acceder a un usuario")
     print("Presiona 3 para salir de la aplicación")
 
-    x = input("Number pressed: ")
-    print("")
+    x = input("Number pressed: \n")
     while (x != "1" and x != "2" and x != "3"):
         x = input("Número inválido, purba de nuevo: ")
     if (x == "1"):
@@ -176,8 +195,9 @@ def main():
     elif(x == "2"):
         access_user()
     elif(x == "3"):
-        exit()
+        sys.exit()
 
 if __name__ == "__main__":
     print("Bienvenido al programa de Cryptografía")
     main()
+    sys.exit()
