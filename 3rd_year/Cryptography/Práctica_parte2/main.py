@@ -15,14 +15,15 @@ def username_used(users, usr_statement):
 
 def register_user():
     #Abrir usuarios para checkear posobles repeticiones
-    with open("data.json") as read_file:
+    with open("data1.json") as read_file:
         data = json.load(read_file)
         read_file.close()
 
     #Crear nuevo usuario y checkear que no esté repetido
     usr = username_used(data["users"], usr_statement = "Introduce un nuevo nombre de usuario: ")
 
-    #Pedir contraseña y asegurarse que tiene mínimo 10 carácteres (normalmente también se debería asegurar que se utilizan un mínimo de carácteres especiales)
+    #Pedir contraseña y asegurarse que tiene mínimo 10 carácteres
+    # (normalmente también se debería asegurar que se utilizan un mínimo de carácteres especiales)
     local_password = str(input("Introduce una contraseña (con un mínimo de 10 carácteres): "))
     while (len(local_password) < 10):
         local_password = str(input("Longitud de contraseña inválida, pureba otra: ")) 
