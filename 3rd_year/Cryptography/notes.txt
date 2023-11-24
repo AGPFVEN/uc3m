@@ -4,7 +4,10 @@ documentos .pem los tiene cada usuario en su ordenador (local)
 data.json es la representación de lo que debería ser almacenado en una base de datos
 grupo 31
 
-TODO:
-Usar AES o Fernet para mensajes
+TODO (ahora):
+Hash del mensaje
+sign hash
+
+(despues)
 En create message, poder ir a main menu
 En create message, poder ver a todos los usuarios

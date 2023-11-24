@@ -99,40 +99,41 @@ def user_action(active_user:str):
         main()
         sys.exit()
 
-#Posible mejora, mensajes con sender público y privado
+#Mensaje cifrado y firmado con esquema de firma con recuperación del mensaje
 def create_message(sender):
     #Abrir usuarios para checkear posobles destinos
     with open("data.json") as read_file:
         data = json.load(read_file)
         read_file.close()
 
-    #Checkear si destinatario existe y pillar clave pública
-    destination_username = input("A quien le quieres mandar un mensaje?: ")
-    destination_publicKey = ""
-    while(destination_publicKey == ""):
+    #Checkear si destinatario existe y pilb.pbkdf2_hmac('sha512', mensaje)le quieres mandar un mensaje?: ")
+    Llave_publica_destino = ""
+    while(Llave_publica_destino == ""):
         for i in data["users"]:
             if i["username"] == destination_username:
-                destination_publicKey = i["public_key"]
+                Llave_publica_destino = i["public_key"]
 
-        if (destination_publicKey == ""):
+        if (Llave_publica_destino == ""):
             destination_username = input("Destinatario no existente, prueba otro: ")
+    
+    #Pedir mensaje al usuario
+    mensaje = input("Contenido del mensaje: ").encode()
 
-    #Encriptar mensaje con Fernet
-    fernet_key = Fernet.generate_key()
-    fernet_object = Fernet(fernet_key)
-    encrypted_message = fernet_object.encrypt(input("Contenido del mensaje: ").encode())
-    print("Mensaje encriptado: ", encrypted_message)
+    #Asegurar (autenticidad) y (integridad)
+    #  Hash 
+    hash_mensaje = hashlib.pbkdf2_hmac('sha512', mensaje)
 
-    #Encriptar la llave de fernet con RSA
-    encrypted_fernet_key = rsa.encrypt(fernet_key, rsa.PublicKey.load_pkcs1(bytes.fromhex(destination_publicKey)))
-    print("Llave de Fernet encriptada con RSA: ", encrypted_fernet_key)
+    #Asegurar la confidencialidad del mensaje con:
+    #  Fernet (simétrico) para cifrar el mensaje
+    #  RSA (asimétrico) para cifrar y compartir las claves de Fernet
+    mensaje_encriptado, llave_fernet_encriptada = asegurar_confidencialidad(mensaje)
 
     #Modificar JSON
     data["mensajes"].append({
         "ID": data["mensajes"][-1]["ID"] + 1,
         "para": destination_username,
-        "mensaje": encrypted_message.hex(),
-        "llave": encrypted_fernet_key.hex()
+        "mensaje": mensaje_encriptado.hex(),
+        "llave": llave_fernet_encriptada.hex()
     })
 
     #sobreescribir JSON
@@ -142,6 +143,19 @@ def create_message(sender):
 
     #Go to the main page
     user_action(sender)
+
+def asegurar_confidencialidad(message:bytes):
+    #Encriptar mensaje con Fernet
+    fernet_key = Fernet.generate_key()
+    fernet_object = Fernet(fernet_key)
+    encrypted_message = fernet_object.encrypt(message)
+    print("Mensaje encriptado: ", encrypted_message)
+
+    #Encriptar la llave de fernet con RSA
+    encrypted_fernet_key = rsa.encrypt(fernet_key, rsa.PublicKey.load_pkcs1(bytes.fromhex(destination_publicKey)))
+    print("Llave de Fernet encriptada con RSA: ", encrypted_fernet_key)
+
+    return encrypted_message, encrypted_fernet_key
 
 def see_user_messages(sender):
     #Abrir usuarios para checkear posobles destinos
