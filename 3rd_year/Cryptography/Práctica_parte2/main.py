@@ -107,33 +107,35 @@ def create_message(sender):
         read_file.close()
 
     #Checkear si destinatario existe y pilb.pbkdf2_hmac('sha512', mensaje)le quieres mandar un mensaje?: ")
-    Llave_publica_destino = ""
-    while(Llave_publica_destino == ""):
+    destination_user = input("¿A quien le quieres mandar un mensaje? ")
+    destination_public_key = ""
+    while(destination_public_key == ""):
         for i in data["users"]:
-            if i["username"] == destination_username:
-                Llave_publica_destino = i["public_key"]
+            if i["username"] == destination_user:
+                destination_public_key = i["public_key"]
 
-        if (Llave_publica_destino == ""):
-            destination_username = input("Destinatario no existente, prueba otro: ")
+        if (destination_public_key == ""):
+            destination_user = input("Destinatario no existente, prueba otro: ")
     
     #Pedir mensaje al usuario
-    mensaje = input("Contenido del mensaje: ").encode()
+    message = input("Contenido del mensaje: ").encode()
 
-    #Asegurar (autenticidad) y (integridad)
-    #  Hash 
-    hash_mensaje = hashlib.pbkdf2_hmac('sha512', mensaje)
+    #Asegurar (autenticidad) e (integridad)
+    signed = rsa.sign(message, rsa.PrivateKey.load_pkcs1(open(sender + ".pem", "rb").read()), "SHA-512")
 
     #Asegurar la confidencialidad del mensaje con:
     #  Fernet (simétrico) para cifrar el mensaje
     #  RSA (asimétrico) para cifrar y compartir las claves de Fernet
-    mensaje_encriptado, llave_fernet_encriptada = asegurar_confidencialidad(mensaje)
+    encrypted_message, encrypted_fernet_key = asegurar_confidencialidad(message, destination_public_key)
 
     #Modificar JSON
     data["mensajes"].append({
         "ID": data["mensajes"][-1]["ID"] + 1,
-        "para": destination_username,
-        "mensaje": mensaje_encriptado.hex(),
-        "llave": llave_fernet_encriptada.hex()
+        "para": destination_user,
+        "de": sender,
+        "mensaje": encrypted_message.hex(),
+        "llave": encrypted_fernet_key.hex(),
+        "firmado": signed.hex()
     })
 
     #sobreescribir JSON
@@ -144,18 +146,18 @@ def create_message(sender):
     #Go to the main page
     user_action(sender)
 
-def asegurar_confidencialidad(message:bytes):
+def asegurar_confidencialidad(mensaje:bytes, llave_publica_destino:str):
     #Encriptar mensaje con Fernet
-    fernet_key = Fernet.generate_key()
-    fernet_object = Fernet(fernet_key)
-    encrypted_message = fernet_object.encrypt(message)
-    print("Mensaje encriptado: ", encrypted_message)
+    llave_fernet = Fernet.generate_key()
+    objeto_fernet = Fernet(llave_fernet)
+    mensaje_encriptado = objeto_fernet.encrypt(mensaje)
+    print("Mensaje encriptado: ", mensaje_encriptado)
 
     #Encriptar la llave de fernet con RSA
-    encrypted_fernet_key = rsa.encrypt(fernet_key, rsa.PublicKey.load_pkcs1(bytes.fromhex(destination_publicKey)))
-    print("Llave de Fernet encriptada con RSA: ", encrypted_fernet_key)
+    llave_fernet_encriptada = rsa.encrypt(llave_fernet, rsa.PublicKey.load_pkcs1(bytes.fromhex(llave_publica_destino)))
+    print("Llave de Fernet encriptada con RSA: ", llave_fernet_encriptada)
 
-    return encrypted_message, encrypted_fernet_key
+    return mensaje_encriptado, llave_fernet_encriptada
 
 def see_user_messages(sender):
     #Abrir usuarios para checkear posobles destinos
@@ -177,7 +179,7 @@ def decrypt_message(sender):
         data = json.load(read_file)
         read_file.close()
     
-    #Select message
+    #Seleccionar mensaje
     message_id = input("Introduce el ID del mensaje que quieres ver: ")
     while(message_id.isdigit() != True):
         message_id = input("Los IDs son números, itroduce un número: ")
@@ -186,15 +188,38 @@ def decrypt_message(sender):
     for i in data["mensajes"]:
         if int(message_id) == i["ID"]:
             #Desencriptar llave 
+            message_sender = i["de"]
             encrypted_key = i["llave"]
             print("Llave encriptado: " + encrypted_key)
             encrypted_message = i["mensaje"]
             print("Mensaje encriptado: " + encrypted_message)
-    
+            signed_message = i["firmado"]
+
+    #Obtener llave pública del emisor del mensaje
+    message_sender_public_key_string = "" 
+    while(message_sender_public_key_string == ""):
+        for i in data["users"]:
+            if i["username"] == message_sender:
+                message_sender_public_key_string = i["public_key"] 
+
+    #Desencriptar llave de fernet con RSA
     decrypted_key = rsa.decrypt(bytes.fromhex(encrypted_key), rsa.PrivateKey.load_pkcs1(open(sender + ".pem", "rb").read()))
     print("Llave desencriptada: " + decrypted_key.decode())
+
+    #Desencriptar mensaje con fernet
     cipher_suite = Fernet(decrypted_key)
-    print("Mensaje desencriptado: " + cipher_suite.decrypt(bytes.fromhex(encrypted_message)).decode() + "\n")
+    message_decrypted = cipher_suite.decrypt(bytes.fromhex(encrypted_message)).decode()
+    print("Mensaje desencriptado: " + message_decrypted)
+
+    #Validar mensaje con su correspondiente firma
+    message_sender_public_key_object = rsa.PublicKey.load_pkcs1(bytes.fromhex(message_sender_public_key_string))
+    try:
+        rsa.verify(message_decrypted.encode(), bytes.fromhex(signed_message), message_sender_public_key_object)
+        print("Message Validated Correctly\n")
+    except rsa.VerificationError:
+        print("Message Validation Error, sign may be manipulated\n")
+
+    #Continuar programa
     user_action(sender)
 
 def main():
