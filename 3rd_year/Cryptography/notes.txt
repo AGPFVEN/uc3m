@@ -11,3 +11,8 @@ sign hash
 (despues)
 En create message, poder ir a main menu
 En create message, poder ver a todos los usuarios
+
+Aclaraciones:
+    CA, certificados y solicitudes debería estar y ejecutarse en remoto
+        CA ejecutandose en un servidor
+        certificados y solicitudes en una base de datos (de archivos)

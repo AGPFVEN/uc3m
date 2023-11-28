@@ -3,6 +3,7 @@ import json
 import rsa
 import sys
 
+from OpenSSL import crypto
 from cryptography.fernet import Fernet
 
 #Función recurrente
@@ -15,12 +16,12 @@ def username_used(users, usr_statement):
 
 def register_user():
     #Abrir usuarios para checkear posobles repeticiones
-    with open("data1.json") as read_file:
+    with open("data.json") as read_file:
         data = json.load(read_file)
         read_file.close()
 
     #Crear nuevo usuario y checkear que no esté repetido
-    usr = username_used(data["users"], usr_statement = "Introduce un nuevo nombre de usuario: ")
+    user_name = username_used(data["users"], usr_statement = "Introduce un nuevo nombre de usuario: ")
 
     #Pedir contraseña y asegurarse que tiene mínimo 10 carácteres
     # (normalmente también se debería asegurar que se utilizan un mínimo de carácteres especiales)
@@ -29,17 +30,31 @@ def register_user():
         local_password = str(input("Longitud de contraseña inválida, pureba otra: ")) 
 
     #Usar función Hash para encriptar (aunque con una función hash no se puede desencriptar) la contraseña
-    usrPassword = hashlib.pbkdf2_hmac('sha512', local_password.encode(), usr[-4:].encode(), len(usr))
-    print(usrPassword.hex())
+    usrPassword = hashlib.pbkdf2_hmac('sha512', local_password.encode(), user_name[-4:].encode(), len(user_name))
+    print("Este es el hash de la contraseña: \n" + usrPassword.hex() + "\n")
 
     #Crear pareja de claves para rsa
     public_key, private_key = rsa.newkeys(3072)
-    with open(usr + ".pem", "wb") as f:
+    with open(user_name + ".pem", "wb") as f:
         f.write(private_key.save_pkcs1("PEM"))
         f.close()
 
-    #Añadir nuevo usuario
-    data["users"].append({"username": usr, "password": usrPassword.hex(), "public_key": public_key.save_pkcs1("PEM").hex()})
+    #Pasar claves de RSA a RSA de OpenSSL
+    public_key_openssl = crypto.load_publickey(crypto.FILETYPE_PEM, public_key._save_pkcs1_pem())
+    private_key_openssl = crypto.load_privatekey(crypto.FILETYPE_PEM, private_key._save_pkcs1_pem())
+    
+    #Crear solicitud de certificado
+    certificate_request = crypto.X509Req()
+    certificate_request.get_subject().CN = user_name
+    certificate_request.set_pubkey(public_key_openssl)
+    certificate_request.sign(private_key_openssl, "sha256")
+
+    # Exportar la solicitud de certificado a un archivo
+    with open("solicitudes/" + user_name + ".csr", "wt") as f:
+        f.write(crypto.dump_certificate_request(crypto.FILETYPE_PEM, certificate_request).decode("utf-8"))
+
+    #Añadir nuevo usuario (Usar certificados en vez de json ?)
+    data["users"].append({"username": user_name, "password": usrPassword.hex(), "public_key": public_key.save_pkcs1("PEM").hex()})
 
     #sobreescribir JSON
     with open("data.json", "w") as json_file:
@@ -68,7 +83,6 @@ def access_user():
                 print("Contraseña incorrecta serás redirigido al menú principal")
                 main()
                 sys.exit()
-
 
     #Si usuario no existe ir al menú principal
     if access_password == "":
