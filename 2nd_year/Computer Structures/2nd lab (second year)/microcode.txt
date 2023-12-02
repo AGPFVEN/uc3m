@@ -1,0 +1,135 @@
+##
+## Microcode Section
+##
+
+begin
+{
+   fetch: (T2, C0),
+          (TA, R, BW=11, M1=1, C1=1),
+          (M2, C2, T1, C3),
+          (A0, B=0, C=0)
+}
+
+
+#
+# ALU
+#
+la  reg addr {
+     co=010001,
+     nwords=2,
+		 reg=reg(25,21),
+     addr=address(63,32)abs,
+     help='r1 = addr/32',
+     {
+        (T2, C0),
+        (TA, R, BW=11, M1=1, C1),
+        (M2, C2, T1, LC, MR=0, SELC=10101, A0, B, C=0)
+     }
+}
+
+lc	reg1 reg2 (reg3) {
+  	co=010011,
+    nwords=1,
+    reg1=reg(25,21),
+    reg2=reg(20,16),
+    reg3=reg(15,11),
+    {
+        (MR=0, SELA=01011, T9, C0, C4),
+        (TA, R, BW=11, M1=1, C1, MA=1, MB=10, SELCOP=01010, MC, T6, C0, SELP=11, M7=1, C7),
+        (TA, R, BW=11, M1=1, C1, T1, LC, MR=0, SELC=10101, SE),
+        (T1, LC, MR=0, SELC=10000, SE, A0, B, C=0)
+	}
+}
+
+addc reg1 reg2 reg3 reg4 {
+    co=010100,
+    nwords=1, 
+    reg1=reg(25,21),
+    reg2=reg(20,16),
+    reg3=reg(15,11),
+    reg4=reg(10, 6),
+    {
+        (MR=0, SELA=10101, MA=0, SELB=01011, MB=00, SELCOP=1010, MC, T6, SELC=10101, LC, SELP=11, M7, C7),
+        (MR=0, SELA=10000, MA=0, SELB=00110, MB=00, SELCOP=1010, MC, T6, SELC=10000, LC, SELP=11, M7, C7, A0, B, C=0)
+    }
+}
+
+mulc reg1 reg2 reg3 reg4 {
+    co=010101,
+    nwords=1, 
+    reg1=reg(25,21),
+    reg2=reg(20,16),
+    reg3=reg(15,11),
+    reg4=reg(10, 6),
+    {
+        (MR=0, SELA=10101, MA=0, SELB=01011, MB=00, SELCOP=1100, MC, T6, C4, SELP=11, M7, C7),      #RT1 <-reg1 * reg3
+        (MR=0, SELA=10000, MA=0, SELB=00110, MB=00, SELCOP=1100, MC, T6, C5, LC, SELP=11, M7, C7),  #RT2 <-reg2 * reg4
+        (MA=1, MB=01, SELCOP=1011, MC, SELP=11, M7, C7, T6, SELC=10101, LC)                         #reg1 <- RT1 - RT2
+        (MR=0, SELA=10101, MA=0, SELB=00110, MB=00, SELCOP=1100, MC, T6, C4, SELP=11, M7, C7),      #RT1 <- reg1 * reg4
+        (MR=0, SELA=10000, MA=0, SELB=01011, MB=00, SELCOP=1100, MC, T6, C5, LC, SELP=11, M7, C7),  #RT2 <- reg2 * reg3
+        (MA=1, MB=01, SELCOP=1011, MC, SELP=11, M7, C7, T6, SELC=10101, LC)
+        (A0, B, C=0)
+    }
+}
+
+#Revisar-----------------------------------------------------
+sc reg1, reg2, (reg3) {
+    co=010010,
+    nwords=1,
+    reg1=reg(25,21),
+    reg2=reg(20,16),
+    reg3=reg(15,11),
+    {
+        (MR=0, SELA=01011, T9, C0, C4),
+        (MR=0, SELA=10101, T9, M1=0, C1),
+        (BW=11, TA, TD, W)
+        (A0, B, C=0)
+    }
+}
+##
+## Register Section
+##
+registers
+{
+      0=($zero, $0),
+      1=($at, $1),
+      2=($v0, $2),
+      3=($v1, $3),
+      4=($a0, $4),
+      5=($a1, $5),
+      6=($a2, $6),
+      7=($a3, $7),
+      8=($t0, $8),
+      9=($t1, $9),
+     10=($t2, $10),
+     11=($t3, $11),
+     12=($t4, $12),
+     13=($t5, $13),
+     14=($t6, $14),
+     15=($t7, $15),
+     16=($s0, $16),
+     17=($s1, $17),
+     18=($s2, $18),
+     19=($s3, $19),
+     20=($s4, $20),
+     21=($s5, $21),
+     22=($s6, $22),
+     23=($s7, $23),
+     24=($t8, $24),
+     25=($t9, $25),
+     26=($k0, $26),
+     27=($k1, $27),
+     28=($gp, $28),
+     29=($sp, $29) (stack_pointer),
+     30=($fp, $30),
+     31=($ra, $31)
+}
+
+
+
+
+
+
+
+
+
