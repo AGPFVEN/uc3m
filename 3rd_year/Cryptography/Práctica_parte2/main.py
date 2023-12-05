@@ -50,10 +50,10 @@ def register_user():
     certificate_request.sign(private_key_openssl, "sha256")
 
     # Exportar la solicitud de certificado a un archivo
-    with open("solicitudes/" + user_name + ".csr", "wt") as f:
+    with open("CA_1/solicitudes/" + user_name + ".csr", "wt") as f:
         f.write(crypto.dump_certificate_request(crypto.FILETYPE_PEM, certificate_request).decode("utf-8"))
 
-    #Añadir nuevo usuario (Usar certificados en vez de json ?)
+    #Añadir nuevo usuario
     data["users"].append({"username": user_name, "password": usrPassword.hex(), "public_key": public_key.save_pkcs1("PEM").hex()})
 
     #sobreescribir JSON
@@ -208,6 +208,27 @@ def decrypt_message(sender):
             encrypted_message = i["mensaje"]
             print("Mensaje encriptado: " + encrypted_message)
             signed_message = i["firmado"]
+
+    #Cargar certificado de CA
+    with open("CA_1/certificados/CA_1certificado.pem", "rb") as f:
+        ca_cert = crypto.load_certificate(crypto.FILETYPE_PEM, f.read())
+
+    #Cargar certificado del usuario mensajero
+    with open("CA_1/certificados/CA_1certificado.pem", "rb") as f:
+        cert = crypto.load_certificate(crypto.FILETYPE_PEM, f.read())
+
+    #Verificar certificado
+    store = crypto.X509Store()
+    store.add_cert(ca_cert)
+    store_ctx = crypto.X509StoreContext(store, cert)
+
+    try:
+        store_ctx.verify_certificate()
+        print("Certificado validado")
+    except:
+        print("Certificado no validado")
+        print("Serás redirigido al menú de usuario")
+        user_action(sender)
 
     #Obtener llave pública del emisor del mensaje
     message_sender_public_key_string = "" 

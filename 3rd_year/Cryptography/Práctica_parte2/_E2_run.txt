@@ -1,1 +1,4 @@
-Para ejecutar la práctica simplemente hay que ejecutar el main.py
+Para ejecutar la práctica hay que ejecutar el main.py
+
+Aunque para crear usuarios y certificarlos se debe ejecutar el main.py, crear el usuario
+y después ejecutar CA.py y denegar o aceptar la solicitud de certificación de la CA

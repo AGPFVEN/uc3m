@@ -15,4 +15,9 @@ En create message, poder ver a todos los usuarios
 Aclaraciones:
     CA, certificados y solicitudes debería estar y ejecutarse en remoto
         CA ejecutandose en un servidor
-        certificados y solicitudes en una base de datos (de archivos)
+        los directorios CA representan una bases de datos
+    
+    data.json se mantiene porque sería muy costoso y no real que una Autoridad de certificación verifique si la contraseña
+    del usuario es
+
+    curiosidad ->

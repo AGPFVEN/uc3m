@@ -1,0 +1,21 @@
+En PCA:
+    ip route show
+    ip address show
+
+En PCB:
+    ip route show
+    ip address show
+
+En RA:
+    show running-config
+    show ip route
+
+En RB:
+    show running-config
+    show ip route
+
+En PCA (ping entre equipos)
+    ping -c3 <DIRECCIÓN IP DE PCB>
+
+En PCB (traceroute entre equipos)
+    traceroute -n <DIRECCIÓN IP DE PCA>
