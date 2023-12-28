@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "kernelspec": {
+      "name": "node_nteract",
+      "language": "javascript",
+      "display_name": "Node.js (nteract)"
+    },
+    "kernel_info": {
+      "name": "node_nteract"
+    },
+    "language_info": {
+      "name": "javascript",
+      "version": "8.2.1",
+      "mimetype": "application/javascript",
+      "file_extension": ".js"
+    },
+    "title": "WepSIM ",
+    "nteract": {
+      "version": "nteract-on-jupyter@2.0.0"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": "## mode",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "ep",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "mode",
+        "type": "string",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## firmware",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "##\n## Microcode Section\n##\n\n#\n# ALU\n#\nla  reg addr {\n    co=010001,\n    nwords=2,\n\treg=reg(25,21),\n    addr=address(63,32)abs,\n    help='r1 = addr/32',\n    {\n        (T2, C0),\n        (TA, R, BW=11, M1=1, C1),\n        (M2, C2, T1, LC, MR=0, SELC=10101, A0, B, C=0)\n    }\n}\n\nlc\treg1 reg2 (reg3) {\n  \tco=010011,\n    nwords=1,\n    reg1=reg(25,21),\n    reg2=reg(20,16),\n    reg3=reg(15,11),\n    {\n        (MR=0, SELA=01011, T9, C0, C4),\n        (TA, R, BW=11, M1=1, C1, MA=1, MB=10, SELCOP=01010, MC, T6, C0, SELP=11, M7=1, C7),\n        (TA, R, BW=11, M1=1, C1, T1, LC, MR=0, SELC=10101, SE),\n        (T1, LC, MR=0, SELC=10000, SE, A0, B, C=0)\n\t}\n}\n\naddc reg1 reg2 reg3 reg4 {\n    co=010100,\n    nwords=1, \n    reg1=reg(25,21),\n    reg2=reg(20,16),\n    reg3=reg(15,11),\n    reg4=reg(10, 6),\n    {\n        (MR=0, SELA=10101, MA=0, SELB=01011, MB=00, SELCOP=1010, MC, T6, SELC=10101, LC, SELP=11, M7, C7),\n        (MR=0, SELA=10000, MA=0, SELB=00110, MB=00, SELCOP=1010, MC, T6, SELC=10000, LC, SELP=11, M7, C7, A0, B, C=0)\n    }\n}\n\nmulc reg1 reg2 reg3 reg4 {\n    co=010101,\n    nwords=1, \n    reg1=reg(25,21),\n    reg2=reg(20,16),\n    reg3=reg(15,11),\n    reg4=reg(10, 6),\n    {\n        (MR=0, SELA=10101, MA=0, SELB=01011, MB=00, SELCOP=1100, MC, T6, C4, SELP=11, M7, C7),      #RT1  <- reg1 * reg3\n        (MR=0, SELA=10000, MA=0, SELB=00110, MB=00, SELCOP=1100, MC, T6, C5, SELP=11, M7, C7),      #RT2  <- reg2 * reg4\n        (MA=1, MB=01, SELCOP=1011, MC, SELP=11, M7, C7, C6),                                        #RT3  <- RT1 - RT2\n        (MR=0, SELA=10101, MA=0, SELB=00110, MB=00, SELCOP=1100, MC, T6, C4, SELP=11, M7, C7),      #RT1  <- reg1 * reg4\n        (MR=0, SELA=10000, MA=0, SELB=01011, MB=00, SELCOP=1100, MC, T6, C5, SELP=11, M7, C7),      #RT2  <- reg2 * reg3\n        (MA=1, MB=01, SELCOP=1010, MC, SELP=11, M7, C7, T6, SELC=10000, LC),                        #reg2 <- RT1 + RT2\n        (T7, LC, SELC=10101, A0, B, C=0)                                                            #reg1 <- RT3\n    }\n}\n\nhcf {\n    co=100011,\n    nwords=1,\n    {\n        (EXCODE=0, T11, M2=0, C2, M7, C7, A0, B, C=0)\n    }\n}\n\nbeqc reg1 reg2 reg3 reg4 offset {\n    co=110100,\n    nwords=1,\n    reg1=reg(25,21),\n    reg2=reg(20,16),\n    reg3=reg(15,11),\n    reg4=reg(10, 6),\n    offset=address(5,0)rel,\n    help='if ($r1 == $r2) pc += offset',\n    {\n             (T8, C5),\n             (SELA=10101, SELB=01011, MC=1, SELCOP=1011, SELP=11, M7, C7),\n             (A0=0, B=1, C=110, MADDR=bck2ftch),\n             (SELA=10000, SELB=00110, MC=1, SELCOP=1011, SELP=11, M7, C7),\n             (A0=0, B=1, C=110, MADDR=bck2ftch),\n             (T5, M7=0, C7),\n             (T2, C4),\n             (SE=1, OFFSET=0, SIZE=10000, T3, C5),\n             (MA=1, MB=1, MC=1, SELCOP=1010, T6, C2, A0=1, B=1, C=0),\n   bck2ftch: (T5, M7=0, C7),\n             (A0, B, C=0)\n    }\n}\n\ncall addr {\n    co=100001,\n    nwords=1,\n    addr=address(19, 0)rel,\n    help='ra <- pc, pc <- addr',\n    {\n        (T2, MR=1, SELC=00001, LC),\n        (SE, SIZE=10100, OFFSET=0, T3, M2=1, C2, A0, B, C=0)\n    }\n}\n\nret {\n    co=100010,\n    nwords=1,\n    help='pc <- ra'\n    {\n        (MR=1, SELA=00001, T9, M2=0, C2, A0, B, C=0)\n    }\n}\n\nsc reg1, reg2, (reg3) {\n    co=010010,\n    nwords=1,\n    reg1=reg(25,21),\n    reg2=reg(20,16),\n    reg3=reg(15,11),\n    {\n        (MR=0, SELA=01011, T9, C0, C4),\n        (MR=0, SELA=10101, T9, M1=0, C1),\n        (BW=11, TA, TD, W, MA=1, MB=10, SELCOP=1010, MC=1, T6, C0),\n        (MR=0, SELA=10000, T9, M1=0, C1),\n        (BW=11, TA, TD, W, A0, B, C=0)\n    }\n}",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "firmware",
+        "type": "string",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## assembly",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": ".data\n\tw1: .word 12, 40\n   w2: .word 10, 40\n\n.text\nmain:\n    #Test save address\n    la t0 w1\n    lc t1 t2 (t0)\n    la t3 w2\n    lc t4 t5 (t3)\n    addc t1 t2 t4 t5\n    sc t1 t2 (t0)",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "assembly",
+        "type": "string",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## state_current",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "{\n  \"time\": 1701634900913,\n  \"title\": \"clock 46 @ &#181;address 0\",\n  \"title_short\": \"clock 46,<br>&#181;add 0\",\n  \"content\": \"register R2 = 0x100000; register R5 = 0x1000; register R6 = 0x16; register R7 = 0x50; register R28 = 0x1008; register R29 = 0xa; register R30 = 0x28; register PC = 0x8020; memory 0x1000 = 0x16; memory 0x1004 = 0x50; memory 0x1008 = 0xa; memory 0x100c = 0x28; memory 0x8000 = 0x44a00000; memory 0x8004 = 0x1000; memory 0x8008 = 0x4cc72800; memory 0x800c = 0x47800000; memory 0x8010 = 0x1008; memory 0x8014 = 0x4fbee000; memory 0x8018 = 0x50c7ef80; memory 0x801c = 0x48c72800; \"\n}",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "state_current",
+        "type": "object",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## state_history",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "[]",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "state_history",
+        "type": "object",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## record",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "[]",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "record",
+        "type": "object",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## tag",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "12/3/2023, 9:21:36 PM",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "tag",
+        "type": "string",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## notify",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "true",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "notify",
+        "type": "boolean",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    }
+  ]
+}

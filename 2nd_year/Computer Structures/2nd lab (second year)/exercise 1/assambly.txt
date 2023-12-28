@@ -1,0 +1,67 @@
+.data
+	w1: .word 12, 40
+    w2: .word 12, 40
+
+with_ext:
+    #Load complex numbers into registers
+    lc t2 t3 (t0)
+    lc t4 t5 (t1)
+
+    #Check if eq
+    beqc t2 t3 t4 t5 diff
+    mulc t2 t3 t4 t5
+    ret
+diff:
+    addc t2 t3 t4 t5
+    ret
+
+no_ext:
+    #Not use arguments
+    mv $t0, $a0
+    mv $t1, $a1
+
+    #Lo$ad r$eal part
+    lw $t2, $t0
+    lw $t3, $t1
+
+    #Load imaginary part
+    addi $t0, $t0, 4
+    addi $t1, $t1, 4
+    lw $t4, $t0
+    lw $t5, $t1
+
+    #Check
+    bne t2, t3, not_eq_ne
+    bne t4, t5, not_eq_ne
+    #Same complex numbers
+    mul $t0, $t2, $t4
+    mul $t1, $t3, $t5
+    sub $a0, $t0, $t1
+    mul $t0, $t2, $t5
+    mul $t1, $t3, $t4
+    sub $a1, $t0, $t1
+    ret
+
+#Check different 
+not_eq_ne:
+    add $a0, $t2, $t4
+    add $a1, $t3, $t5
+
+main:
+    rdcycle s0
+
+    #Load address of complex numbers
+    la t0 w1
+    la t1 w2
+    call with_ext
+    rdcycle s1
+    sub s1 s1 s0
+
+    rdcycle s0
+    la t0 w1
+    la t1 w2
+    call no_ext
+    rdcycle s2
+    sub s2 s2 s0
+
+    hcf

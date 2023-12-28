@@ -1,0 +1,1 @@
+-Como guardar algo en data que previamente no existe o que no se tenía una longitud
