@@ -23,18 +23,21 @@
     Matrix_mul:
     #Copy matrix addresses
     mv s0, a0   #s0 = m1
-    mv s1, a1   #s0 = m2
+    mv s1, a1   #s1 = m2
 
-    #Check matrix dimensions
-    sw s2, 0(s0)    #s2 -> dimensions of m1
-    sw s3, 4(s1)    #s3 -> dimensions of m2
+    #Check matrix dimensions (Check if multiplication is possible)
+    sw s2, 0(s0)    #s2 -> dimensions of m1 (Rows)
+    sw s3, 4(s1)    #s3 -> dimensions of m2 (Columns)
     bne s2, s3, end_mul
     sw s2, 4(s0)
     sw s3, 0(s1)
     bne s2, s3, end_mul
 
     #Set up matrix counters
-    li s2, 0    #s2 -> matrix counter
+    sw s3, 4(s0)    #s3 -> Dimensions of m1 (Columns)
+    mul s2, s2, s3  #s2 -> Counter (Limit)
+    li s3, 0        #s3 -> Counter (Actual position)
+    li s4, 0        #s4 -> Counter of m2 (Actual position)
 
     #End multiplication function
     end_mul:
