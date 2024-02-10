@@ -1,0 +1,18 @@
+MAKEFILES-------------------------------------------------------------------------------
+Primero se ejecutan los .h 
+
+cmake, formato: cuidado con las comillas y los tabs
+
+Cflags="-Wall -g"
+
+para ejecutar all se necesita el main.exe
+all: main.exe
+
+lib_hola.o: lib hola.c
+    gcc $(Cflags) -g 
+
+
+LOS MAKE FILES NO SE HACEN DESDE 0, SE COPIAN Y MODIFICAN
+
+hacer una variable con todos los objetos y hacer una regla con un make clean que los borre para hacer un makefile perfecto
+-------------------------------------------------------------------------------
