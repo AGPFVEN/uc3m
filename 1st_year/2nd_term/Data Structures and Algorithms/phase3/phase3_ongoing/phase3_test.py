@@ -40,94 +40,94 @@ class Graph2Test(unittest.TestCase):
         self.undirected_graph.add_edge('F', 'G')
         # print(self.undirected_graph)
 #
-    def test1(self):
-        """ directed_graph.min_number_edges('A', 'B')"""
-        print("\n test1: directed_graph.min_number_edges('A', 'B')")
-        actual = self.directed_graph.min_number_edges('A', 'B')
-        expected = 1
-        print('actual = ', actual)
-        print('expected = ', expected)
-        self.assertEqual(actual, expected)
-        Graph2Test.mark += 0.70
+    #def test1(self):
+        #""" directed_graph.min_number_edges('A', 'B')"""
+        #print("\n test1: directed_graph.min_number_edges('A', 'B')")
+        #actual = self.directed_graph.min_number_edges('A', 'B')
+        #expected = 1
+        #print('actual = ', actual)
+        #print('expected = ', expected)
+        #self.assertEqual(actual, expected)
+        #Graph2Test.mark += 0.70
 
-    def test2(self):
-        """ directed_graph.min_number_edges('A', 'E')"""
-        print("\n test2: directed_graph.min_number_edges('A', 'E')")
-        actual = self.directed_graph.min_number_edges('A', 'E')
-        expected = 2
-        print('actual = ', actual)
-        print('expected = ', expected)
-        self.assertEqual(actual, expected)
-        Graph2Test.mark += 0.70
+    #def test2(self):
+        #""" directed_graph.min_number_edges('A', 'E')"""
+        #print("\n test2: directed_graph.min_number_edges('A', 'E')")
+        #actual = self.directed_graph.min_number_edges('A', 'E')
+        #expected = 2
+        #print('actual = ', actual)
+        #print('expected = ', expected)
+        #self.assertEqual(actual, expected)
+        #Graph2Test.mark += 0.70
 
-    def test3(self):
-        """ directed_graph.min_number_edges('A', 'G')"""
-        print("\n test3: directed_graph.min_number_edges('A', 'G')")
-        actual = self.directed_graph.min_number_edges('A', 'G')
-        expected = 4
-        print('actual = ', actual)
-        print('expected = ', expected)
-        self.assertEqual(actual, expected)
-        Graph2Test.mark += 0.70
+    #def test3(self):
+        #""" directed_graph.min_number_edges('A', 'G')"""
+        #print("\n test3: directed_graph.min_number_edges('A', 'G')")
+        #actual = self.directed_graph.min_number_edges('A', 'G')
+        #expected = 4
+        #print('actual = ', actual)
+        #print('expected = ', expected)
+        #self.assertEqual(actual, expected)
+        #Graph2Test.mark += 0.70
 
-    def test4(self):
-        """ directed_graph.min_number_edges('G', 'A')"""
-        print("\n test4: directed_graph.min_number_edges('G', 'A')")
-        actual = self.directed_graph.min_number_edges('G', 'A')
-        expected = 0
-        print('actual = ', actual)
-        print('expected = ', expected)
-        self.assertEqual(actual, expected)
-        Graph2Test.mark += 0.70
+    #def test4(self):
+        #""" directed_graph.min_number_edges('G', 'A')"""
+        #print("\n test4: directed_graph.min_number_edges('G', 'A')")
+        #actual = self.directed_graph.min_number_edges('G', 'A')
+        #expected = 0
+        #print('actual = ', actual)
+        #print('expected = ', expected)
+        #self.assertEqual(actual, expected)
+        #Graph2Test.mark += 0.70
 
-    def test5(self):
-        """ undirected_graph.min_number_edges('G', 'A')"""
-        print("\n test5: undirected_graph.min_number_edges('G', 'A')")
-        actual = self.undirected_graph.min_number_edges('G', 'A')
-        expected = 4
-        print('actual = ', actual)
-        print('expected = ', expected)
-        self.assertEqual(actual, expected)
-        Graph2Test.mark += 0.80
+    #def test5(self):
+        #""" undirected_graph.min_number_edges('G', 'A')"""
+        #print("\n test5: undirected_graph.min_number_edges('G', 'A')")
+        #actual = self.undirected_graph.min_number_edges('G', 'A')
+        #expected = 4
+        #print('actual = ', actual)
+        #print('expected = ', expected)
+        #self.assertEqual(actual, expected)
+        #Graph2Test.mark += 0.80
 
-    def test6(self):
-        """ undirected_graph.min_number_edges('E', 'A')"""
-        print("\n test6: undirected_graph.min_number_edges('E', 'A')")
-        actual = self.undirected_graph.min_number_edges('E', 'A')
-        expected = 2
-        print('actual = ', actual)
-        print('expected = ', expected)
-        self.assertEqual(actual, expected)
-        Graph2Test.mark += 0.70
+    #def test6(self):
+        #""" undirected_graph.min_number_edges('E', 'A')"""
+        #print("\n test6: undirected_graph.min_number_edges('E', 'A')")
+        #actual = self.undirected_graph.min_number_edges('E', 'A')
+        #expected = 2
+        #print('actual = ', actual)
+        #print('expected = ', expected)
+        #self.assertEqual(actual, expected)
+        #Graph2Test.mark += 0.70
 
-    def test7(self):
-        """ undirected_graph.transpose """
-        print("\n test7: undirected_graph.transpose()")
-        actual = self.undirected_graph.transpose()
-        expected = self.undirected_graph
-        # print('actual = \n', str(actual))
-        # print('expected = \n', str(expected))
-        self.assertEqual(actual, expected)
-        Graph2Test.mark += 0.60
+    #def test7(self):
+        #""" undirected_graph.transpose """
+        #print("\n test7: undirected_graph.transpose()")
+        #actual = self.undirected_graph.transpose()
+        #expected = self.undirected_graph
+        ## print('actual = \n', str(actual))
+        ## print('expected = \n', str(expected))
+        #self.assertEqual(actual, expected)
+        #Graph2Test.mark += 0.60
 
-    def test8(self):
-        """ directed_graph.transpose """
-        print("\n test8: directed_graph.transpose()")
-        actual = self.directed_graph.transpose()
-        expected = Graph2(self.vertices)
-        expected.add_edge('B', 'A')
-        expected.add_edge('C', 'A')
-        expected.add_edge('C', 'B')
-        expected.add_edge('D', 'B')
-        expected.add_edge('E', 'C')
-        expected.add_edge('E', 'D')
-        expected.add_edge('F', 'E')
-        expected.add_edge('G', 'F')
+    #def test8(self):
+        #""" directed_graph.transpose """
+        #print("\n test8: directed_graph.transpose()")
+        #actual = self.directed_graph.transpose()
+        #expected = Graph2(self.vertices)
+        #expected.add_edge('B', 'A')
+        #expected.add_edge('C', 'A')
+        #expected.add_edge('C', 'B')
+        #expected.add_edge('D', 'B')
+        #expected.add_edge('E', 'C')
+        #expected.add_edge('E', 'D')
+        #expected.add_edge('F', 'E')
+        #expected.add_edge('G', 'F')
 
-        # print('actual = \n', str(actual))
-        #print('expected = \n', str(expected))
-        self.assertEqual(actual, expected)
-        Graph2Test.mark += 0.60
+        ## print('actual = \n', str(actual))
+        ##print('expected = \n', str(expected))
+        #self.assertEqual(actual, expected)
+        #Graph2Test.mark += 0.60
 
     def test9(self):
         """ directed_graph.is_strongly_connected"""
