@@ -8,14 +8,13 @@
 int main(int argc, char *argv[])
 {
 	/*If less than two arguments (argv[0] -> program, argv[1] -> file to process) print an error y return -1*/
-	//if(argc < 2){
-		//printf("Too few arguments\n");
-		//return -1;
-	//}
+	if(argc < 2){
+		printf("Too few arguments\n");
+		return -1;
+	}
 
 	// open file
-	//int fd = open(argv[1], O_RDONLY);
-	int fd = open("./p1_tests/f1.txt", O_RDONLY);
+	int fd = open(argv[1], O_RDONLY);
 	if (fd == -1){
 		printf("Error at opening file\n");
 		return -1;
@@ -33,6 +32,11 @@ int main(int argc, char *argv[])
 	do{
 		// read 1 byte or char of the file
 		data = read(fd, buffer_file, buffer_size);
+		if (data == -1){
+			printf("Error at reading file\n");
+			return -1;
+		}
+
 		n_bytes++;
 
 		// analize the char
