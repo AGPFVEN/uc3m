@@ -1,0 +1,13 @@
+andsanto@inf.uc3m.es
+Andres Santos 2.2.16
+Tutorias: Lunes 09:00 - 11:00 (cita por email)
+
+Puede entregar la práctica una sola persona
+
+Orden de entregas:
+    Práctica 1 (semana 4)
+    Práctica 2 (semana 8)
+    Exposición Caso Práctico (semana 10) 
+    Código Caso Práctico (semana 14)
+
+Para la primera práctica se necesitarán columnas, utiliza divs no tables
