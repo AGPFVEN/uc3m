@@ -1,2 +1,0 @@
-tome la decision de checker porque permite que el código sea más flexible si se ponen más condiciones
- y para evitar repetir código
