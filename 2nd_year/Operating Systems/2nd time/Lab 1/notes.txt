@@ -1,0 +1,6 @@
+I checked mywc with:
+1 tab
+1 new line
+empty
+authors
+f1

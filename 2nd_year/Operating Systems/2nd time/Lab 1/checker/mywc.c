@@ -21,25 +21,24 @@ int main(int argc, char *argv[])
 	}
 
 	// declare variables in order to read file
-	char* buffer_file = malloc(sizeof(char));
 	int buffer_size = 1;
-	ssize_t data;
-	int n_lines = 0;
-	int n_words = 0;
-	int n_bytes = 0;
+	char* buffer_file = malloc(sizeof(char) * buffer_size);
+	ssize_t result;
+	int n_lines, n_words, n_bytes = 0;
 
-	// loop to read and analize file
-	do{
+	// loop to read and analyze file
+	while ((result = read(fd, buffer_file, buffer_size)) == buffer_size * sizeof(char)) {
 		// read 1 byte or char of the file
-		data = read(fd, buffer_file, buffer_size);
-		if (data == -1){
+		if (result == -1){
+
 			printf("Error at reading file\n");
 			return -1;
+
 		}
 
 		n_bytes++;
 
-		// analize the char
+		// analyze the char
 		if (*buffer_file == '\n'){
 
 			n_lines++;
@@ -51,17 +50,14 @@ int main(int argc, char *argv[])
 
 		}
 
-	} while (data == buffer_size * sizeof(char));
-	
-
-	// count first word
-	if (n_words != 0){
-		n_words++;
 	}
-
 	// discount last byte
-	if (n_bytes != 0){
-		n_bytes--;
+	n_bytes--;
+	
+	// count first word
+	if (n_bytes > 0){
+
+		n_words++;
 	}
 
 	// print the result
