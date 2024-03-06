@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 		if (in_word == 0){
 
 			// start of a word
-			if (!(*buffer_file == '\n' || *buffer_file == ' ' || *buffer_file == '\t' )) {
+			if (!(*buffer_file < 32 || *buffer_file == 127)) {
 				n_words++;
 				in_word = 1;
 			}	
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 		} else {
 
 			// end of a word
-			if (*buffer_file == '\n' || *buffer_file == ' ' || *buffer_file == '\t' ){
+			if (*buffer_file < 32 || *buffer_file == 127){
 				in_word = 0;
 			}
 

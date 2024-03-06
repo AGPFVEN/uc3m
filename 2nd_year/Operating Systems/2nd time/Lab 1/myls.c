@@ -10,22 +10,22 @@
 int main(int argc, char *argv[])
 {
 	// string containing path 
-	char *givenPath;
+	char *given_path;
 
 	// select path
 	if (argc < 2){
-		givenPath = "./";
+		given_path = "./";
 	} else {
-		givenPath = argv[1];
+		given_path = argv[1];
 	}
 
 	// pointer to DIR object
 	DIR *dir;
 
 	// open directory
-	dir = opendir(givenPath);
+	dir = opendir(given_path);
 	if (dir == NULL){
-		printf("Error at openning directory '%s'\n", givenPath);
+		printf("Error at openning directory '%s'\n", given_path);
 		return -1;
 	}
 

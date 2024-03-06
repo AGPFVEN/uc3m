@@ -1,6 +1,6 @@
-I checked mywc with:
-1 tab
-1 new line
-empty
-authors
-f1
+./mywc p1_tests/"1nw copy".txt;
+./mywc p1_tests/1nw.txt;
+./mywc p1_tests/"1tab copy".txt;
+./mywc p1_tests/1tab.txt;
+./mywc p1_tests/"f1 copy".txt;
+./mywc p1_tests/f1.txt
