@@ -1,0 +1,11 @@
+https://github.com/acaldero/uc3m_sd/blob/main/transparencias/ssdd_c.md#6--archivos-de-cabecera-y-proyectos-de-varios-archivos
+https://aulaglobal.uc3m.es/pluginfile.php/6824234/mod_resource/content/10/E1-pasomensajes-v2a.pdf
+
+Doing: Fase no distribuida
+    - Crear Archivo
+        + Primera compilación
+    
+TODO:
+    - Crea structura
+    - Rellenar estructura
+    - Guardar estructura
