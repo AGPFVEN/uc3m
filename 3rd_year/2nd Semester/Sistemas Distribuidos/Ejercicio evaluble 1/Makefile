@@ -11,10 +11,11 @@ LDFLAGS = -L$(INSTALL_PATH)/lib/
 all: $(BIN_FILES)
 .PHONY : all
 
+clave_test: *.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $^  -o $@
 
 claves: claves.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $^  -o $@
-
 
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
