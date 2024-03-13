@@ -9,3 +9,12 @@ TODO:
     - Crea structura
     - Rellenar estructura
     - Guardar estructura
+
+Apuntes para doc:
+    una de las cosas que tuve en cuenta es que el código sea crossplatform
+
+    init:
+        - en caso init, borrar y crear uno nuevo mejor que borrar contenido por performance
+
+    possible improvement:
+        - En init al borrar todos los archivos usar punteros para los nombres (para aceptar con la menor memoria)
