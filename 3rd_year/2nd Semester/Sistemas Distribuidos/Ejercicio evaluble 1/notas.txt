@@ -15,6 +15,9 @@ Apuntes para doc:
 
     init:
         - en caso init, borrar y crear uno nuevo mejor que borrar contenido por performance
+        - checkear que Nvalue corresponda con el size del array
 
+    set_value:
+    
     possible improvement:
-        - En init al borrar todos los archivos usar punteros para los nombres (para aceptar con la menor memoria)
+        - En init al borrar todos los archivos usar punteros para los nombres (para aceptar con la menor memoria1)
