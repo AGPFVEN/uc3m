@@ -1,4 +1,4 @@
-BIN_FILES = clave_test
+BIN_FILES =  servidor
 
 CC = gcc
 
@@ -11,17 +11,20 @@ LDFLAGS = -L$(INSTALL_PATH)/lib/
 all: $(BIN_FILES)
 .PHONY : all
 
-clave_test: *.o
+: .o lib-client.o claves.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $^  -o $@
 
-claves: claves.o
+servidor: lib-client.o servidor.o claves.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $^  -o $@
+
+#claves-build.o: main.o claves.o \
 	$(CC) $(CFLAGS) $(LDFLAGS) $^  -o $@
 
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
 
 clean:
-	rm -f $(BIN_FILES) *.o
+	rm *.o
 
 .SUFFIXES:
 .PHONY : clean

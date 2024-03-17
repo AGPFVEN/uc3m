@@ -10,10 +10,6 @@
 #include <errno.h>
 
 
-int test(){
-	return 0;
-}
-
 int init(){
 	// pointer to DIR object
 	DIR *dir;
@@ -23,13 +19,13 @@ int init(){
 
 		// file does not exist
 		if (errno == ENOENT){
-			printf("Creating directory\n");
+			printf("Creando directorio ...\n");
 			mkdir(DB_PATH, 0777);
 			return 0;
 
 		// other cases
 		} else {
-			printf("Error at opening %s", DB_PATH);
+			printf("Error abriendo %s\n", DB_PATH);
 			return -1;
 		}
 	}
@@ -68,15 +64,15 @@ int set_value(int key, char *value1, int N_value2, double *V_value2){
 	}
 
 	// name of file (key) to string
-	char ckey[32];
+	char ckey[15];
 	if (sprintf(ckey, "%d", key) < 0){
 		printf("Error transformando int a string\n");
 		return -1;
 	}
 
 	// path of files inside DB_PATH
-	char path[256];	
-	snprintf(path, strlen(DB_PATH) + 32 + 7,"./%s/%s.txt", DB_PATH, ckey);
+	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
+	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
 
 	// check if file exists
 	FILE *stream;
@@ -87,7 +83,7 @@ int set_value(int key, char *value1, int N_value2, double *V_value2){
 
 	// create file
 	if ((stream = fopen(path, "w")) == NULL){
-		printf("Error abriendo archivo\n");
+		printf("Error abriendo archivo %s\n", path);
 		return -1;
 	}
 
@@ -108,35 +104,59 @@ int set_value(int key, char *value1, int N_value2, double *V_value2){
 		printf("Error imprimiendo value1 en el archivo\n");
 		return -1;
 	}
+
 	if (fputs("\n", stream) == EOF){
 		printf("Error imprimiendo value1 en el archivo\n");
 		return -1;
 	}
 
-	//store numbers
+	// guardar floats
+	char floatToString[328];
 	for (int i = 0; i < N_value2; i++){	
-		if (sprintf(ckey, "%f,", V_value2[i]) < 0){
+		if (sprintf(floatToString, "%f,", V_value2[i]) < 0){
 			printf("Error transformando int a string\n");
 			return -1;
 		}
 
-		if (fputs(ckey, stream) == EOF){
+		if (fputs(floatToString, stream) == EOF){
 			printf("Error imprimiendo value1 en el archivo\n");
 			return -1;
 		}	
 	}
 
-	fclose(stream);
+	// cerrar archivo
+	if (fclose(stream) == EOF){
+		printf("Error cerrando el archivo\n");
+		return -1;
+	}
+	return 0;
+}
 
-	//read
-	if ((stream = fopen(path, "r")) == NULL){
-		printf("Error abriendo archivo\n");
+
+int get_value(int key, char *value1, int *N_value2, double *V_value2){
+	// name of file (key) to string
+	char ckey[15];
+	if (sprintf(ckey, "%d", key) < 0){
+		printf("Error transformando int a string\n");
 		return -1;
 	}
 
+	// path of files inside DB_PATH
+	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
+	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
+
+	// path of files inside DB_PATH
+	FILE *stream;
+	if ((stream = fopen(path, "r")) == NULL){
+		printf("Error abriendo archivo %s\n", path);
+		return -1;
+	}
+
+	// variables to transform str to int
 	char buffer[5] = "";
 	int ch;
 	char bf[2];
+	bf[1] = '\0';
 	while ((ch = fgetc(stream)) != '\n'){
 		bf[0] = ch;
 		strncat(buffer, bf, 1);
@@ -145,20 +165,149 @@ int set_value(int key, char *value1, int N_value2, double *V_value2){
 	char *stopstring;
 	int charCount = strtol(buffer, &stopstring, 10);
 
+	// get value1
 	for (int i = 0; i <= charCount; i++){
 		ch = fgetc(stream);
 		bf[0] = ch;
+		*(value1 + i) = ch;
 	}
+	*(value1 + charCount) = '\0';	
 
-	printf("ho\n");
-	int o = charCount;
+	// get value 2
+	char floatToString[328] = "";
+	int i = 0;
 	while ((ch = fgetc(stream)) != EOF){
-		bf[0] = ch;
-		printf("%s %i\n", bf, o);
-		o++;
+		if(ch == ','){
+			printf("%s\n", floatToString);
+			V_value2[i] =  strtod(floatToString, &stopstring);
+			printf("vv[%i] = %f\n", i, V_value2[i]);
+			strcpy(floatToString, "");
+			i++;
+		} else {
+			bf[0] = ch;
+			strcat(floatToString, bf);
+		}
 	}
+ 	*N_value2 = i;
 
 	fclose(stream);
 
 	return 0;
+}
+
+int modify_value(int key, char *value1, int N_value2, double *V_value2){
+	// name of file (key) to string
+	char ckey[15];
+	if (sprintf(ckey, "%d", key) < 0){
+		printf("Error transformando int a string\n");
+		return -1;
+	}
+
+	// path of files inside DB_PATH
+	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
+	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
+
+	// check if file exists
+	FILE *stream;
+	if ((stream = fopen(path, "r")) == NULL){
+		printf("key no existe\n");
+		return -1;
+	}
+
+	// create file
+	if ((stream = fopen(path, "w")) == NULL){
+		printf("Error abriendo archivo %s\n", path);
+		return -1;
+	}
+
+	// put in file size of string
+	if (sprintf(ckey, "%ld\n", strlen(value1)) < 0){
+		printf("Error transformando int a string\n");
+		return -1;
+	}
+
+	// number of chars in string (of value1)
+	if (fputs(ckey, stream) == EOF){
+		printf("Error imprimiendo número de carácteres de value1 en el archivo\n");
+		return -1;
+	}
+
+	// store value1
+	if (fputs(value1, stream) == EOF){
+		printf("Error imprimiendo value1 en el archivo\n");
+		return -1;
+	}
+
+	if (fputs("\n", stream) == EOF){
+		printf("Error imprimiendo value1 en el archivo\n");
+		return -1;
+	}
+
+	// guardar floats
+	char floatToString[328];
+	for (int i = 0; i < N_value2; i++){	
+		if (sprintf(floatToString, "%f,", V_value2[i]) < 0){
+			printf("Error transformando int a string\n");
+			return -1;
+		}
+
+		if (fputs(floatToString, stream) == EOF){
+			printf("Error imprimiendo value1 en el archivo\n");
+			return -1;
+		}	
+	}
+
+	// cerrar archivo
+	if (fclose(stream) == EOF){
+		printf("Error cerrando el archivo\n");
+		return -1;
+	}
+	return 0;
+}
+
+int  delete_key(int key){
+	// name of file (key) to string
+	char ckey[15];
+	if (sprintf(ckey, "%d", key) < 0){
+		printf("Error transformando int a string\n");
+		return -1;
+	}
+
+	// path of files inside DB_PATH
+	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
+	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
+
+	// check if file exists
+	FILE *stream;
+	if ((stream = fopen(path, "r")) == NULL){
+		printf("key no existe\n");
+		return -1;
+	}
+
+	remove(path);
+
+	return 0;
+}
+
+
+int exist(int key){
+	// name of file (key) to string
+	char ckey[15];
+	if (sprintf(ckey, "%d", key) < 0){
+		printf("Error transformando int a string\n");
+		return -1;
+	}
+
+	// path of files inside DB_PATH
+	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
+	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
+
+	// check if file exists
+	FILE *stream;
+	if ((stream = fopen(path, "r")) == NULL){
+		printf("key no existe\n");
+		return 0;
+	}
+	
+	return 1;
 }

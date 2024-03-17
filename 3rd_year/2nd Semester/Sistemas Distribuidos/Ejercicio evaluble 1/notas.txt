@@ -18,6 +18,10 @@ Apuntes para doc:
         - checkear que Nvalue corresponda con el size del array
 
     set_value:
-    
+        - hacer floatToStrnig memory dinamic
+
     possible improvement:
         - En init al borrar todos los archivos usar punteros para los nombres (para aceptar con la menor memoria1)
+
+||||||||||||aaa|||||||||||
+zip kk.zip Makefile claves.c cliente.c lib-client.c servidor.c main.c claves-h lib-client.h lib-mesg.h 
