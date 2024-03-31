@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 int main (int argc, char **argv)
 {
@@ -16,38 +15,60 @@ int main (int argc, char **argv)
     if (dynamic_array == NULL){
 
         perror("Error allocating memory. args to dynamic array");
-        return -1;
+        exit(-1);
+    }
 
-    } else {
+    printf("Memory allocated successfully\n");
 
-        printf("Memory allocated successfully\n");
+    //Análisis de argumentos
+    for(int i=1; i<argc; i++){
 
-        //Análisis de argumentos
-        for(int i=1; i<argc; i++){
+        //Convertir de char a long int
+        analizing_arg = strtol(argv[i], &end, 10);
+        printf("Argumento %d: ", i + 1); 
 
-            //Convertir de char a long int
-            analizing_arg = strtol(argv[i], &end, 10);
-            printf("Argumento %d: ", i + 1); 
+        if(*end != '\0'){
+            //Casos inútiles
+            printf("Error de conversión\n");
+        } else {
+            //Casos útiles
+            printf("%ld\n", analizing_arg);
 
-            if(*end != '\0'){
-                //Casos inútiles
-                printf("Error de conversión\n");
-            } else {
-                //Casos útiles
-                printf("%ld\n", analizing_arg);
-
-                //Añadir número a array dinámico
-                dynamic_array[i - 1] = analizing_arg;
-                array_length++;
-            }
-        }
-
-        //Comprobar que argumentos entraron bien
-        printf("The elements of the array are: "); 
-        for (int k = 0; k < array_length; ++k) { 
-            printf("%ld, ", dynamic_array[k]); 
+            //Añadir número a array dinámico
+            dynamic_array[i - 1] = analizing_arg;
+            array_length++;
         }
     }
+
+    //Reasignar memoria del array dinámico (Ajustar memoria para reducir la memoria)
+    long int *reallocated_dynamic_array = (long int*) realloc(dynamic_array, sizeof(long int) * array_length);
+
+    //Comprobar que argumentos entraron bien
+    printf("The elements of the array are: "); 
+    for (int k = 0; k < array_length; ++k) { 
+        printf("%ld, ", dynamic_array[k]); 
+    }
+    printf("\n");
+    printf("The elements of the array are: "); 
+    for (int k = 0; k < array_length; ++k) { 
+        printf("%ld, ", reallocated_dynamic_array[k]); 
+    }
+    printf("\n");
+
+    //Deslocalizar memoria
+    free(dynamic_array);
+
+    //Comprobar que argumentos entraron bien
+    printf("The elements of the array are: "); 
+    for (int k = 0; k < array_length; ++k) { 
+        printf("%ld, ", dynamic_array[k]); 
+    }
+    printf("\n");
+    printf("The elements of the array are: "); 
+    for (int k = 0; k < array_length; ++k) { 
+        printf("%ld, ", reallocated_dynamic_array[k]); 
+    }
+    printf("\n");
 
     return 0;
 }

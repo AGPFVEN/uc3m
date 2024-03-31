@@ -24,4 +24,4 @@ Apuntes para doc:
         - En init al borrar todos los archivos usar punteros para los nombres (para aceptar con la menor memoria1)
 
 ||||||||||||aaa|||||||||||
-zip kk.zip Makefile claves.c cliente.c lib-client.c servidor.c main.c claves-h lib-client.h lib-mesg.h 
+tar -cvf ejercicio_evaluable1.tar Makefile claves.c cliente.c lib-client.c servidor.c pruebaclaves.c claves.h lib-client.h lib-mesg.h memoria.pdf
