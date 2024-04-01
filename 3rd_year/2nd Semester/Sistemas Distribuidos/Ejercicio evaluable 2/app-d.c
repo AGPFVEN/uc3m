@@ -41,6 +41,7 @@ int main ( int argc, char *argv[] )
     }
 
     //set_value
+    /*
     double *t;
     int size = 3;
     t = (double *) malloc(sizeof(double) * size);
@@ -51,7 +52,7 @@ int main ( int argc, char *argv[] )
     if (ret < 0) {
         printf("d_set_value: error code %d\n", ret) ;
         exit(-1) ;
-    }
+    }*/
 
     /*int val ;
     for (int i=0; i<N; i++)

@@ -44,6 +44,7 @@ int d_send_receive ( struct message *pr )
         perror("socket: ") ;
         exit(-1) ;
      }
+     printf("oo\n");
 
      // connect
      address.sin_family = AF_INET ;
@@ -61,7 +62,8 @@ int d_send_receive ( struct message *pr )
          perror("connect: ");
 	 close(sd_server) ;
          exit(-1);
-     } 
+     }
+     printf("ii\n");
 
      // send request
      ret = write(sd_server, (char *)pr, sizeof(struct message)) ;
@@ -99,7 +101,9 @@ int d_init ()
      pr.op    = 1 ;
 
      // send request and receive response
+     printf("jj\n");
      d_send_receive(&pr) ;
+     printf("kk\n");
 
      // return status
      return pr.status ;
