@@ -20,5 +20,5 @@ mount:
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -f *.o
+	rm -f app-d lib-server *.o
 

@@ -80,6 +80,7 @@ int d_send_receive ( struct message *pr )
 	 close(sd_server) ;
          exit(-1);
      }
+     printf("write and read\n");
 
      // close socket
      ret = close(sd_server) ;

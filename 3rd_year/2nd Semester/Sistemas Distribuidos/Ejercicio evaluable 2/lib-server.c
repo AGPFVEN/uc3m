@@ -56,9 +56,9 @@ void tratar_peticion ( int arg )
      switch (pr.op)
      {
          case 1: // INIT
-                 pr.status = init() ;
-		 d_printf(" %d = init();\n",    pr.status) ;
-                 break ;
+               pr.status = init() ;
+		     d_printf(" %d = init();\n",    pr.status) ;
+               break ;
          /*case 2: // SET
                printf("1\n");
                pr.status = set_value(pr.key, pr.value1, pr.N_value2, pr.value2) ;
@@ -68,9 +68,9 @@ void tratar_peticion ( int arg )
                  pr.status = get(pr.name, pr.i, &(pr.value)) ;
 		 d_printf(" %d = get(%s, %d, 0x%x);\n", pr.status, pr.name, pr.i, pr.value) ;
                  break ; */
-	 default:
-		 d_printf(" unknown();\n") ;
-                 break ;
+	     default:
+		     d_printf(" unknown();\n") ;
+               break ;
      }
 
      ret = write(sd_client, (char *)&pr, sizeof(struct message)) ;

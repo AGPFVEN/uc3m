@@ -119,7 +119,9 @@ int main ( int argc, char *argv[] )
      address.sin_addr.s_addr = INADDR_ANY ;
      address.sin_port        = htons(4200) ;
 
-     if (bind(sd_server, (struct sockaddr *)&address,  sizeof(address)) < 0)
+     int j =bind(sd_server, (struct sockaddr *)&address,  sizeof(address));
+
+     if (j < 0)
      {
          perror("bind: ");
          exit(-1);
