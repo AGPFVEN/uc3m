@@ -41,18 +41,27 @@ int main ( int argc, char *argv[] )
     }
 
     //set_value
-    /*
     double *t;
     int size = 3;
     t = (double *) malloc(sizeof(double) * size);
-    for (int i = 0; i < size; i++){
+    for (int i = 1; i < size; i++){
         t[i] = i * 5;
     }
-    ret = d_set_value(5, "hjkhjk", size, t);
+
+    char *op = "ijijijijijo";
+    ret = d_set_value(5, op, size, t);
     if (ret < 0) {
         printf("d_set_value: error code %d\n", ret) ;
         exit(-1) ;
-    }*/
+    }
+
+    char *pp;
+    pp = (char *) malloc(12 * sizeof(char));
+    double *p;
+    p = (double *) malloc(sizeof(double) * 3);
+
+    ret = d_get_value(5, pp, 3, p);
+    printf("%s\n", pp);
 
     /*int val ;
     for (int i=0; i<N; i++)
@@ -65,7 +74,7 @@ int main ( int argc, char *argv[] )
 	    }
 	    printf("set(\"%s\", %d, 0x%x)\n", A, 100+i, i) ;
     }
-
+    
     for (int i=0; i<N; i++)
     {
 	    // get

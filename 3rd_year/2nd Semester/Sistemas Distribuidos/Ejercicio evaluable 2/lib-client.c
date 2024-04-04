@@ -44,7 +44,6 @@ int d_send_receive ( struct message *pr )
         perror("socket: ") ;
         exit(-1) ;
      }
-     printf("oo\n");
 
      // connect
      address.sin_family = AF_INET ;
@@ -63,7 +62,6 @@ int d_send_receive ( struct message *pr )
 	 close(sd_server) ;
          exit(-1);
      }
-     printf("ii\n");
 
      // send request
      ret = write(sd_server, (char *)pr, sizeof(struct message)) ;
@@ -80,7 +78,6 @@ int d_send_receive ( struct message *pr )
 	 close(sd_server) ;
          exit(-1);
      }
-     printf("write and read\n");
 
      // close socket
      ret = close(sd_server) ;
@@ -102,9 +99,7 @@ int d_init ()
      pr.op    = 1 ;
 
      // send request and receive response
-     printf("jj\n");
      d_send_receive(&pr) ;
-     printf("kk\n");
 
      // return status
      return pr.status ;
@@ -115,8 +110,9 @@ int d_set_value (int key, char *value1, int N_value2, double *V_value2)
      struct message pr;
 
      // set message
-     bzero(&pr, sizeof(struct message)) ;
-     pr.op    = 2 ;
+     bzero(&pr, sizeof(struct message));
+     pr.key = key;
+     pr.op = 2;
      strcpy(pr.value1, value1);
      pr.N_value2 = N_value2;
      for (int i = 0; i < N_value2; i++){
@@ -130,21 +126,20 @@ int d_set_value (int key, char *value1, int N_value2, double *V_value2)
      return pr.status ;
 }
 
-/*int d_get ( char *nombre, int i, int *valor )
+int d_get_value (int key, char *value1, int N_value2, double *V_value2)
 {
      struct message pr;
 
      // get message
      bzero(&pr, sizeof(struct message)) ;
-     pr.op    = 3 ;
-     pr.i     = i ;
-     strcpy(pr.name, nombre) ;
+     pr.op = 3;
+     pr.value1 = value1;
+     pr.key = key;
+     pr.N_value2 = N_value2;
 
      // send request and receive response
-     d_send_receive(&pr) ;
+     d_send_receive(&pr);
 
      // return value + status
-     *valor = pr.value ;
-     return pr.status ;
-}*/
-
+     return pr.status;
+}

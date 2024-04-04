@@ -55,19 +55,20 @@ void tratar_peticion ( int arg )
 
      switch (pr.op)
      {
-         case 1: // INIT
-               pr.status = init() ;
-		     d_printf(" %d = init();\n",    pr.status) ;
-               break ;
-         /*case 2: // SET
+         case 1: // INIT 
+               printf("iniciando init\n");
+               pr.status = init();
+		     printf(" %d = init();\n", pr.status);
+               break;
+         case 2: // SET
                printf("1\n");
                pr.status = set_value(pr.key, pr.value1, pr.N_value2, pr.value2) ;
-		 d_printf(" %d = set(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
-                 break ;
-         /*case 3: // GET
-                 pr.status = get(pr.name, pr.i, &(pr.value)) ;
-		 d_printf(" %d = get(%s, %d, 0x%x);\n", pr.status, pr.name, pr.i, pr.value) ;
-                 break ; */
+		     printf(" %d = set(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
+               break ;
+         case 3: // GET
+               pr.status = get_value(pr.key, &(pr.value1), pr.N_value2, &(pr.value2)) ;
+		     printf(" %d = set(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
+               break;
 	     default:
 		     d_printf(" unknown();\n") ;
                break ;

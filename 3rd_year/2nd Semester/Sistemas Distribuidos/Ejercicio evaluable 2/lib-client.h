@@ -26,10 +26,10 @@
    int d_init () ;
 
    // Inserta el valor en la posición i del array nombre.
-   int d_set_value  (int key, char *value1, int N_value2, double *V_value2) ;
+   int d_set_value (int key, char *value1, int N_value2, double *V_value2);
 
    // Recuperar el valor del elemento i del array nombre. 
-   int d_get  ( char *nombre, int i, int *valor ) ;
+   int d_get_value (int key, char *value1, int N_value2, double *V_value2);
 
 #endif
 

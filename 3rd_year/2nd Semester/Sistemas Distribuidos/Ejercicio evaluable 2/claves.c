@@ -59,8 +59,8 @@ int init(){
 int set_value(int key, char *value1, int N_value2, double *V_value2){
 
 	// check if key is inside the range
-	if ((key < 1) || (key >32)){
-		printf("key está fuera de rango");
+	if ((N_value2 < 1) || (N_value2 >32)){
+		printf("Número de valores en tupla fuera de rango");
 	}
 
 	// name of file (key) to string
@@ -188,7 +188,6 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2){
 			strcat(floatToString, bf);
 		}
 	}
- 	*N_value2 = i;
 
 	fclose(stream);
 
