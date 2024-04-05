@@ -31,7 +31,7 @@
       // peticion 
       int    op;
       int    key;
-      char   value1[V1_MAX] ;
+      char   value1[V1_MAX];
       int    N_value2;
       double value2[V2_MAX];
       // respuesta

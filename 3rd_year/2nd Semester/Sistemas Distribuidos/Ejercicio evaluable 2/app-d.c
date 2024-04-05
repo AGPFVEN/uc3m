@@ -49,7 +49,9 @@ int main ( int argc, char *argv[] )
     }
 
     char *op = "ijijijijijo";
+    printf("going\n");
     ret = d_set_value(5, op, size, t);
+    printf("go\n");
     if (ret < 0) {
         printf("d_set_value: error code %d\n", ret) ;
         exit(-1) ;

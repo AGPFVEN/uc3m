@@ -114,7 +114,7 @@ int d_set_value (int key, char *value1, int N_value2, double *V_value2)
      pr.key = key;
      pr.op = 2;
      strcpy(pr.value1, value1);
-     pr.N_value2 = N_value2;
+     pr.N_value2 = N_value2; 
      for (int i = 0; i < N_value2; i++){
           pr.value2[i] = V_value2[i];
      }
@@ -131,9 +131,8 @@ int d_get_value (int key, char *value1, int N_value2, double *V_value2)
      struct message pr;
 
      // get message
-     bzero(&pr, sizeof(struct message)) ;
+     bzero(&pr, sizeof(struct message));
      pr.op = 3;
-     pr.value1 = value1;
      pr.key = key;
      pr.N_value2 = N_value2;
 
