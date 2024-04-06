@@ -31,5 +31,12 @@
    // Recuperar el valor del elemento i del array nombre. 
    int d_get_value (int key, char *value1, int N_value2, double *V_value2);
 
+   // Modificar valor
+   int d_modify_value(int key, char *value1, int N_value2, double *V_value2);
+
+   int d_delete_key(int key);
+
+   int d_exist(int key);
+
 #endif
 

@@ -67,7 +67,19 @@ void tratar_peticion ( int arg )
                break ;
          case 3: // GET
                pr.status = get_value(pr.key, &(pr.value1), pr.N_value2, &(pr.value2)) ;
-		     printf(" %d = set(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
+		     printf(" %d = get(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
+               break;
+         case 4: // GET
+               pr.status = modify_value(pr.key, &(pr.value1), pr.N_value2, &(pr.value2)) ;
+		     printf(" %d = modify(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
+               break;
+         case 5: // GET
+               pr.status = delete_key(pr.key);
+		     printf(" %d = delete(%i);\n", pr.status, pr.key);
+               break;
+         case 6: // GET
+               pr.status = exist(pr.key);
+		     printf(" %d = exist(%i);\n", pr.status, pr.key);
                break;
 	     default:
 		     d_printf(" unknown();\n") ;

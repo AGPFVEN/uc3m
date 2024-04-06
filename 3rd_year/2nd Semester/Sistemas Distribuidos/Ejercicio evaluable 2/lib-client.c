@@ -138,7 +138,65 @@ int d_get_value (int key, char *value1, int N_value2, double *V_value2)
 
      // send request and receive response
      d_send_receive(&pr);
-
+ 
      // return value + status
+     strcpy(value1, pr.value1);
+
+     for (int i = 0; i < N_value2; i++){
+          V_value2[i] = pr.value2[i];
+     }
+
      return pr.status;
+}
+
+int d_modify_value(int key, char *value1, int N_value2, double *V_value2)
+{
+     struct message pr;
+
+     // set message
+     bzero(&pr, sizeof(struct message));
+     pr.key = key;
+     pr.op = 4;
+     strcpy(pr.value1, value1);
+     pr.N_value2 = N_value2; 
+     for (int i = 0; i < N_value2; i++){
+          pr.value2[i] = V_value2[i];
+     }
+
+     // send request and receive response
+     d_send_receive(&pr) ;
+
+     // return status
+     return pr.status ;
+}
+
+int d_delete_key(int key)
+{
+     struct message pr;
+
+     // set message
+     bzero(&pr, sizeof(struct message));
+     pr.key = key;
+     pr.op = 5;
+
+     // send request and receive response
+     d_send_receive(&pr) ;
+
+     // return status
+     return pr.status ;
+}
+int d_exist(int key)
+{
+     struct message pr;
+
+     // set message
+     bzero(&pr, sizeof(struct message));
+     pr.key = key;
+     pr.op = 6;
+
+     // send request and receive response
+     d_send_receive(&pr) ;
+
+     // return status
+     return pr.status ;
 }

@@ -49,21 +49,34 @@ int main ( int argc, char *argv[] )
     }
 
     char *op = "ijijijijijo";
-    printf("going\n");
     ret = d_set_value(5, op, size, t);
-    printf("go\n");
     if (ret < 0) {
         printf("d_set_value: error code %d\n", ret) ;
         exit(-1) ;
     }
 
     char *pp;
-    pp = (char *) malloc(12 * sizeof(char));
     double *p;
+    pp = (char *) malloc(sizeof(char) * 12);
     p = (double *) malloc(sizeof(double) * 3);
 
     ret = d_get_value(5, pp, 3, p);
     printf("%s\n", pp);
+    printf("%f\n", p[1]);
+
+    //set_value
+    char *up = "cambiando";
+    double *ki;
+    size = 5;
+    ki = (double *) malloc(sizeof(double) * size);
+    for (int i = 1; i < size; i++){
+        ki[i] = i * 9;
+    }
+    ret = d_modify_value(5, up, size, ki);
+    ret = d_exist(5);
+    ret = d_delete_key(5);
+    ret = d_exist(5);
+    ret = d_delete_key(5);
 
     /*int val ;
     for (int i=0; i<N; i++)
