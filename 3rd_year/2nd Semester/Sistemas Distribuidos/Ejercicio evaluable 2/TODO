@@ -1,1 +1,10 @@
+Falta:
+    - Concurrencia
+    - Librería diámica
+
+Decisiones:
+    - threads
+    - Productor-consumidor con buffer acotado
+    - Semáforo sin nombre (los threads comparten memoria)
+
 https://github.com/acaldero/uc3m_sd/blob/main/transparencias/casopractico_sockets_calculadora.md

@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "lib-client.h"
+#include "claves.h"
 
 
 int   N = 10 ;
@@ -77,29 +77,6 @@ int main ( int argc, char *argv[] )
     ret = d_delete_key(5);
     ret = d_exist(5);
     ret = d_delete_key(5);
-
-    /*int val ;
-    for (int i=0; i<N; i++)
-    {
-	    // set
-	    ret = d_set (A, 100+i, i) ;
-	    if (ret < 0) {
-		printf("d_set: error code %d\n", ret) ;
-		exit(-1) ;
-	    }
-	    printf("set(\"%s\", %d, 0x%x)\n", A, 100+i, i) ;
-    }
-    
-    for (int i=0; i<N; i++)
-    {
-	    // get
-	    ret = d_get (A, 100+i, &val) ;
-	    if (ret < 0) {
-		printf("d_get: error code %d\n", ret) ;
-		exit(-1) ;
-	    }
-	    printf("get(\"%s\", %d) -> 0x%x\n", A, 100+i, val) ;
-    }*/
 
     return 0 ;
 }

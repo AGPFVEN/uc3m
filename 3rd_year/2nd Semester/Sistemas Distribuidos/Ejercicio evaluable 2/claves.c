@@ -1,312 +1,203 @@
-#include "claves.h"
 
-#define DB_PATH "BASEDEDATOS"
+/*
+ *  Copyright 2020-2024 Felix Garcia Carballeira, Alejandro Calderon Mateos,
+ *
+ *  This file is part of nanodt proyect.
+ *
+ *  nanodt is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  nanodt is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with nanodt.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
+#include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <dirent.h>
 #include <string.h>
-#include <errno.h>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#include "claves.h"
+#include "mensajes.h"
 
 
-int init(){
-	// pointer to DIR object
-	DIR *dir;
+int d_send_receive ( struct message *pr )
+{
+     int ret ;
+     int sd_server ;
+     struct sockaddr_in address;
 
-	// error has occurred
-	if ((dir = opendir(DB_PATH)) == NULL){
+     // open server sockets
+     sd_server = socket(AF_INET, SOCK_STREAM, 0) ;
+     if (sd_server <= 0) {
+        perror("socket: ") ;
+        exit(-1) ;
+     }
 
-		// file does not exist
-		if (errno == ENOENT){
-			printf("Creando directorio ...\n");
-			mkdir(DB_PATH, 0777);
-			return 0;
+     // connect
+     address.sin_family = AF_INET ;
+     address.sin_port   = htons(atoi(getenv("PORT_TUPLAS")));
 
-		// other cases
-		} else {
-			printf("Error abriendo %s\n", DB_PATH);
-			return -1;
-		}
-	}
-	
-	// dirent structure indicating next directory entry
-	struct dirent  *entry;
+     ret = inet_pton(AF_INET, getenv("IP_TUPLAS"), &address.sin_addr) ;
+     if (ret <= 0) { 
+         printf("\nInvalid address or address not supported\n") ;
+	 close(sd_server) ;
+         exit(-1);
+     } 
 
-	// path of files inside DB_PATH
-	char path[256];
+     ret = connect(sd_server, (struct sockaddr *)&address, sizeof(address)) ;
+     if (ret < 0) { 
+         perror("connect: ");
+	 close(sd_server) ;
+         exit(-1);
+     }
 
-	// remove each file from directory
-	while ((entry = readdir(dir)) != NULL){
+     // send request
+     ret = write(sd_server, (char *)pr, sizeof(struct message)) ;
+     if (ret < 0) {
+	 perror("write: ") ;
+	 close(sd_server) ;
+         exit(-1);
+     }
 
-		// check if they are sensitive directories
-		if(!((strcmp(entry->d_name, ".") == 0) || (strcmp(entry->d_name, "..") == 0))){
+     // receive response
+     ret = read(sd_server, (char *)pr, sizeof(struct message)) ;
+     if (ret < 0) {
+	 perror("read: ") ;
+	 close(sd_server) ;
+         exit(-1);
+     }
 
-			// get file name
-			snprintf(path, strlen(DB_PATH) + strlen(entry->d_name) + 4,"./%s/%s", DB_PATH, entry->d_name);
+     // close socket
+     ret = close(sd_server) ;
+     if (ret < 0) {
+	 perror("close: ") ;
+         exit(-1);
+     }
 
-			// remove file
-			remove(path);
-		}
-	}
-
-	// close directory
-	closedir(dir);
-
-	return 0;
+     // return status
+     return pr->status ;
 }
 
-int set_value(int key, char *value1, int N_value2, double *V_value2){
+int d_init ()
+{
+     struct message pr;
 
-	// check if key is inside the range
-	if ((N_value2 < 1) || (N_value2 >32)){
-		printf("Número de valores en tupla fuera de rango");
-	}
+     // init message
+     bzero(&pr, sizeof(struct message)) ;
+     pr.op    = 1 ;
 
-	// name of file (key) to string
-	char ckey[15];
-	if (sprintf(ckey, "%d", key) < 0){
-		printf("Error transformando int a string\n");
-		return -1;
-	}
+     // send request and receive response
+     d_send_receive(&pr) ;
 
-	// path of files inside DB_PATH
-	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
-	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
-
-	// check if file exists
-	FILE *stream;
-	if ((stream = fopen(path, "r")) != NULL){
-		printf("key ya existe\n");
-		return -1;
-	}
-
-	// create file
-	if ((stream = fopen(path, "w")) == NULL){
-		printf("Error abriendo archivo %s\n", path);
-		return -1;
-	}
-
-	// put in file size of string
-	if (sprintf(ckey, "%ld\n", strlen(value1)) < 0){
-		printf("Error transformando int a string\n");
-		return -1;
-	}
-
-	// number of chars in string (of value1)
-	if (fputs(ckey, stream) == EOF){
-		printf("Error imprimiendo número de carácteres de value1 en el archivo\n");
-		return -1;
-	}
-
-	// store value1
-	if (fputs(value1, stream) == EOF){
-		printf("Error imprimiendo value1 en el archivo\n");
-		return -1;
-	}
-
-	if (fputs("\n", stream) == EOF){
-		printf("Error imprimiendo value1 en el archivo\n");
-		return -1;
-	}
-
-	// guardar floats
-	char floatToString[328];
-	for (int i = 0; i < N_value2; i++){	
-		if (sprintf(floatToString, "%f,", V_value2[i]) < 0){
-			printf("Error transformando int a string\n");
-			return -1;
-		}
-
-		if (fputs(floatToString, stream) == EOF){
-			printf("Error imprimiendo value1 en el archivo\n");
-			return -1;
-		}	
-	}
-
-	// cerrar archivo
-	if (fclose(stream) == EOF){
-		printf("Error cerrando el archivo\n");
-		return -1;
-	}
-	return 0;
+     // return status
+     return pr.status ;
 }
 
+int d_set_value (int key, char *value1, int N_value2, double *V_value2)
+{
+     struct message pr;
 
-int get_value(int key, char *value1, int *N_value2, double *V_value2){
-	// name of file (key) to string
-	char ckey[15];
-	if (sprintf(ckey, "%d", key) < 0){
-		printf("Error transformando int a string\n");
-		return -1;
-	}
+     // set message
+     bzero(&pr, sizeof(struct message));
+     pr.key = key;
+     pr.op = 2;
+     strcpy(pr.value1, value1);
+     pr.N_value2 = N_value2; 
+     for (int i = 0; i < N_value2; i++){
+          pr.value2[i] = V_value2[i];
+     }
 
-	// path of files inside DB_PATH
-	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
-	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
+     // send request and receive response
+     d_send_receive(&pr) ;
 
-	// path of files inside DB_PATH
-	FILE *stream;
-	if ((stream = fopen(path, "r")) == NULL){
-		printf("Error abriendo archivo %s\n", path);
-		return -1;
-	}
-
-	// variables to transform str to int
-	char buffer[5] = "";
-	int ch;
-	char bf[2];
-	bf[1] = '\0';
-	while ((ch = fgetc(stream)) != '\n'){
-		bf[0] = ch;
-		strncat(buffer, bf, 1);
-	} 
-
-	char *stopstring;
-	int charCount = strtol(buffer, &stopstring, 10);
-
-	// get value1
-	for (int i = 0; i <= charCount; i++){
-		ch = fgetc(stream);
-		bf[0] = ch;
-		*(value1 + i) = ch;
-	}
-	*(value1 + charCount) = '\0';	
-
-	// get value 2
-	char floatToString[328] = "";
-	int i = 0;
-	while ((ch = fgetc(stream)) != EOF){
-		if(ch == ','){
-			printf("%s\n", floatToString);
-			V_value2[i] =  strtod(floatToString, &stopstring);
-			printf("vv[%i] = %f\n", i, V_value2[i]);
-			strcpy(floatToString, "");
-			i++;
-		} else {
-			bf[0] = ch;
-			strcat(floatToString, bf);
-		}
-	}
-
-	fclose(stream);
-
-	return 0;
+     // return status
+     return pr.status ;
 }
 
-int modify_value(int key, char *value1, int N_value2, double *V_value2){
-	// name of file (key) to string
-	char ckey[15];
-	if (sprintf(ckey, "%d", key) < 0){
-		printf("Error transformando int a string\n");
-		return -1;
-	}
+int d_get_value (int key, char *value1, int N_value2, double *V_value2)
+{
+     struct message pr;
 
-	// path of files inside DB_PATH
-	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
-	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
+     // get message
+     bzero(&pr, sizeof(struct message));
+     pr.op = 3;
+     pr.key = key;
+     pr.N_value2 = N_value2;
 
-	// check if file exists
-	FILE *stream;
-	if ((stream = fopen(path, "r")) == NULL){
-		printf("key no existe\n");
-		return -1;
-	}
+     // send request and receive response
+     d_send_receive(&pr);
+ 
+     // return value + status
+     strcpy(value1, pr.value1);
 
-	// create file
-	if ((stream = fopen(path, "w")) == NULL){
-		printf("Error abriendo archivo %s\n", path);
-		return -1;
-	}
+     for (int i = 0; i < N_value2; i++){
+          V_value2[i] = pr.value2[i];
+     }
 
-	// put in file size of string
-	if (sprintf(ckey, "%ld\n", strlen(value1)) < 0){
-		printf("Error transformando int a string\n");
-		return -1;
-	}
-
-	// number of chars in string (of value1)
-	if (fputs(ckey, stream) == EOF){
-		printf("Error imprimiendo número de carácteres de value1 en el archivo\n");
-		return -1;
-	}
-
-	// store value1
-	if (fputs(value1, stream) == EOF){
-		printf("Error imprimiendo value1 en el archivo\n");
-		return -1;
-	}
-
-	if (fputs("\n", stream) == EOF){
-		printf("Error imprimiendo value1 en el archivo\n");
-		return -1;
-	}
-
-	// guardar floats
-	char floatToString[328];
-	for (int i = 0; i < N_value2; i++){	
-		if (sprintf(floatToString, "%f,", V_value2[i]) < 0){
-			printf("Error transformando int a string\n");
-			return -1;
-		}
-
-		if (fputs(floatToString, stream) == EOF){
-			printf("Error imprimiendo value1 en el archivo\n");
-			return -1;
-		}	
-	}
-
-	// cerrar archivo
-	if (fclose(stream) == EOF){
-		printf("Error cerrando el archivo\n");
-		return -1;
-	}
-	return 0;
+     return pr.status;
 }
 
-int  delete_key(int key){
-	// name of file (key) to string
-	char ckey[15];
-	if (sprintf(ckey, "%d", key) < 0){
-		printf("Error transformando int a string\n");
-		return -1;
-	}
+int d_modify_value(int key, char *value1, int N_value2, double *V_value2)
+{
+     struct message pr;
 
-	// path of files inside DB_PATH
-	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
-	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
+     // set message
+     bzero(&pr, sizeof(struct message));
+     pr.key = key;
+     pr.op = 4;
+     strcpy(pr.value1, value1);
+     pr.N_value2 = N_value2; 
+     for (int i = 0; i < N_value2; i++){
+          pr.value2[i] = V_value2[i];
+     }
 
-	// check if file exists
-	FILE *stream;
-	if ((stream = fopen(path, "r")) == NULL){
-		printf("key no existe\n");
-		return -1;
-	}
+     // send request and receive response
+     d_send_receive(&pr) ;
 
-	remove(path);
-
-	return 0;
+     // return status
+     return pr.status ;
 }
 
+int d_delete_key(int key)
+{
+     struct message pr;
 
-int exist(int key){
-	// name of file (key) to string
-	char ckey[15];
-	if (sprintf(ckey, "%d", key) < 0){
-		printf("Error transformando int a string\n");
-		return -1;
-	}
+     // set message
+     bzero(&pr, sizeof(struct message));
+     pr.key = key;
+     pr.op = 5;
 
-	// path of files inside DB_PATH
-	char path[sizeof(DB_PATH) + sizeof(ckey) + 12];	
-	snprintf(path, sizeof(path),"./%s/%s.txt", DB_PATH, ckey);
+     // send request and receive response
+     d_send_receive(&pr) ;
 
-	// check if file exists
-	FILE *stream;
-	if ((stream = fopen(path, "r")) == NULL){
-		printf("key no existe\n");
-		return 0;
-	}
-	
-	return 1;
+     // return status
+     return pr.status ;
+}
+
+int d_exist(int key)
+{
+     struct message pr;
+
+     // set message
+     bzero(&pr, sizeof(struct message));
+     pr.key = key;
+     pr.op = 6;
+
+     // send request and receive response
+     d_send_receive(&pr) ;
+
+     // return status
+     return pr.status ;
 }

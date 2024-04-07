@@ -1,16 +1,16 @@
 
 CC=gcc
 CFLAGS=-g -Wall
-LDFLAGS=
+LDFLAGS=lpthread
 
 
-all :: app-d lib-server
+all :: cliente servidor
 
-app-d: app-d.o  lib-client.o  claves.o
-	$(CC) $(CFLAGS) $(LDFLAGS) app-d.o claves.o lib-client.o -o $@  $(LDFLAGS)
+cliente: cliente.o  claves.o  operaciones.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@  $(LDFLAGS)
 
-lib-server: lib-client.o  lib-server.o  claves.o
-	$(CC) $(CFLAGS) claves.o lib-client.o lib-server.o  -o $@  $(LDFLAGS)
+servidor: claves.o  servidor.o  operaciones.o
+	$(CC) $(CFLAGS) $^ -o $@  $(LDFLAGS)
 
 mount:
 	mkdir -p /dev/mqueue
