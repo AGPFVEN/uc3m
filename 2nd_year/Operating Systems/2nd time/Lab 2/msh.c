@@ -173,35 +173,57 @@ int main(int argc, char* argv[])
 		signal(SIGINT, siginthandler);
 
 		if (run_history)
-    {
-        run_history=0;
-    }
-    else{
-        // Prompt 
-        write(STDERR_FILENO, "MSH>>", strlen("MSH>>"));
-
-        // Get command
-        //********** DO NOT MODIFY THIS PART. IT DISTINGUISH BETWEEN NORMAL/CORRECTION MODE***************
-        executed_cmd_lines++;
-        if( end != 0 && executed_cmd_lines < end) {
-            command_counter = read_command_correction(&argvv, filev, &in_background, cmd_lines[executed_cmd_lines]);
+        {
+            run_history=0;
         }
-        else if( end != 0 && executed_cmd_lines == end)
-            return 0;
-        else
-            command_counter = read_command(&argvv, filev, &in_background); //NORMAL MODE
-    }
+        else{
+            // Prompt 
+            write(STDERR_FILENO, "MSH>>", strlen("MSH>>"));
+
+            // Get command
+            //********** DO NOT MODIFY THIS PART. IT DISTINGUISH BETWEEN NORMAL/CORRECTION MODE***************
+            executed_cmd_lines++;
+            if( end != 0 && executed_cmd_lines < end) {
+                command_counter = read_command_correction(&argvv, filev, &in_background, cmd_lines[executed_cmd_lines]);
+            }
+            else if( end != 0 && executed_cmd_lines == end)
+                return 0;
+            else
+                command_counter = read_command(&argvv, filev, &in_background); //NORMAL MODE
+        }
 		//************************************************************************************************
-
-
 		/************************ STUDENTS CODE ********************************/
-	   if (command_counter > 0) {
+        int pid;
+	    if (command_counter > 0) {
 			if (command_counter > MAX_COMMANDS){
 				printf("Error: Maximum number of commands is %d \n", MAX_COMMANDS);
 			}
 			else {
 				// Print command
 				print_command(argvv, filev, in_background);
+                // *argvv[1] para sacar segundo comando
+                // argvv[0][1] flag para el comando
+                for (int i = 0; i < command_counter; i++){
+                    pid = fork();
+                    switch(pid){
+                        case -1: // Need more specidics 
+                            exit(-1);
+                        case 0: // Son process
+
+                            // Standard input
+                            if (filev[0] != 0){
+                                int fd = open(filev[0], O_RDONLY);
+                                read
+                            }
+
+                            execvp(argvv[i][0], argvv[i]);  //execute command
+                            
+                            //in case of error (because the process image change and the next code will not be executed)
+                            exit(-1);
+                        default:
+                            wait(0);
+                    }
+                }
 			}
 		}
 	}
