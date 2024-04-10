@@ -212,8 +212,13 @@ int main(int argc, char* argv[])
 
                             // Standard input
                             if (filev[0] != 0){
-                                int fd = open(filev[0], O_RDONLY);
-                                read
+                                //File size
+                                struct stat st;
+                                stat(filev[0], &st);
+
+                                char *p;
+                                
+                                
                             }
 
                             execvp(argvv[i][0], argvv[i]);  //execute command
