@@ -193,45 +193,89 @@ int main(int argc, char* argv[])
         }
 		//************************************************************************************************
 		/************************ STUDENTS CODE ********************************/
-        int pid;
 	    if (command_counter > 0) {
 			if (command_counter > MAX_COMMANDS){
 				printf("Error: Maximum number of commands is %d \n", MAX_COMMANDS);
-			}
-			else {
+			} else {
+                printf("%i\n", command_counter);
 				// Print command
 				print_command(argvv, filev, in_background);
                 // *argvv[1] para sacar segundo comando
                 // argvv[0][1] flag para el comando
-                for (int i = 0; i < command_counter; i++){
-                    pid = fork();
-                    switch(pid){
-                        case -1: // Need more specidics 
-                            exit(-1);
-                        case 0: // Son process
+                
+                // Standard input redirection
+                //------------------- wc < dudas.txt para testear (distinto a wc dudas.txt)
+                //------------------- solo un input y/o output por comando
+                int redirection_pipe_input[2];
+                if (pipe(redirection_pipe_input) == -1){
+                    perror("Error creating pipe at redirection input");
+                    exit(EXIT_FAILURE);
+                }
 
-                            // Standard input
-                            if (filev[0] != 0){
-                                //File size
-                                struct stat st;
-                                stat(filev[0], &st);
+                int pid = fork();
+                switch(pid){
+                    case -1: // ------------------ need more specidics 
+                        perror("Error at creating new process");
+                        exit(EXIT_FAILURE);
+                    case 0: // Son process
 
-                                char *p;
-                                
-                                
+                        // handle input redirection if exists
+                        if (filev[0][0] != '0')
+                        {
+                            // open file
+                            int fd_open;
+                            if ((fd_open = open(filev[0], O_RDONLY)) == -1 ){
+                                perror("Error opening file at redirection input");
+                                exit(EXIT_FAILURE);
                             }
 
-                            execvp(argvv[i][0], argvv[i]);  //execute command
-                            
-                            //in case of error (because the process image change and the next code will not be executed)
-                            exit(-1);
-                        default:
+                            // pipe handling
+                            dup2(fd_open, STDIN_FILENO);
+                            close(fd_open);
+                        }
+
+                        // handle output redirection if exists
+                        if (filev[1][0] != '0')
+                        {
+                            // open file
+                            int fd_open;
+                            if ((fd_open = open(filev[1], O_WRONLY)) == -1 ){
+                                perror("Error opening file at redirection output");
+                                exit(EXIT_FAILURE);
+                            }
+
+                            // pipe handling
+                            dup2(fd_open, STDOUT_FILENO);
+                            close(fd_open);
+                        }
+
+                        // handle error redirection if exists
+                        if (filev[2][0] != '0')
+                        {
+                            // open file
+                            int fd_open;
+                            if ((fd_open = open(filev[2], O_WRONLY)) == -1 ){
+                                perror("Error opening file at redirection error");
+                                exit(EXIT_FAILURE);
+                            }
+
+                            // pipe handling
+                            dup2(fd_open, STDERR_FILENO);
+                            close(fd_open);
+                        }
+
+                        execvp(argvv[0][0], argvv[0]);  //execute command
+
+                        // in case of error (because the process image change and the next code will not be executed)
+                        exit(-1);
+                    default:
+                        if (in_background == 0){
                             wait(0);
-                    }
+                        }
                 }
-			}
+            }
 		}
-	}
+	}	
 	
 	return 0;
 }

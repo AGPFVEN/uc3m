@@ -1,0 +1,20 @@
+1.txt
+2.txt
+authors.txt
+checker_os_p2.sh
+dudas.txt
+libparser.so
+Makefile
+msh
+msh.c
+mshe.c
+msh.o
+p2_minishell_2024.zip
+t
+t.c
+1
+ls
+Redir IN: 0
+Redir OUT: 0
+Redir ERR: 0
+No Bg

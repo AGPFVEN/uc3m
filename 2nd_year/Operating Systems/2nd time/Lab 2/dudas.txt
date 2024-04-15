@@ -1,0 +1,3 @@
+- Por que no se puede leer un file descriptor abierto con open en msh?
+
+- Investigar sobre pipes
