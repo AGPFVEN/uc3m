@@ -16,6 +16,13 @@
     
     typedef struct peticion peticion_t;
 
+    // mensaje para el proceso ligero
+    struct message_thread
+    {
+        int (*operacion)(void);
+    };
+    typedef struct message_thread message_thread_t;
+
     void recibir_peticion   (peticion_t *p);
     void responder_peticion (peticion_t *p);
 #endif

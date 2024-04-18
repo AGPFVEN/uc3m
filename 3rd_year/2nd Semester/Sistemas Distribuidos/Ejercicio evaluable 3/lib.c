@@ -1,4 +1,4 @@
-#include "operaciones.h"
+#include "lib.h"
 
 #define DB_PATH "BASEDEDATOS"
 

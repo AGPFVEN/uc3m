@@ -32,7 +32,7 @@
 #include "mensajes.h"
 
 
-int d_send_receive ( struct message *pr )
+int d_send_receive ( message_t *pr )
 {
      int ret ;
      int sd_server ;
@@ -64,7 +64,7 @@ int d_send_receive ( struct message *pr )
      }
 
      // send request
-     ret = write(sd_server, (char *)pr, sizeof(struct message)) ;
+     ret = write(sd_server, (char *)pr, sizeof(message_t)) ;
      if (ret < 0) {
 	 perror("write: ") ;
 	 close(sd_server) ;
@@ -92,7 +92,7 @@ int d_send_receive ( struct message *pr )
 
 int d_init ()
 {
-     struct message pr;
+     message_t pr;
 
      // init message
      bzero(&pr, sizeof(struct message)) ;
@@ -107,7 +107,7 @@ int d_init ()
 
 int d_set_value (int key, char *value1, int N_value2, double *V_value2)
 {
-     struct message pr;
+     message_t pr;
 
      // set message
      bzero(&pr, sizeof(struct message));
@@ -128,7 +128,7 @@ int d_set_value (int key, char *value1, int N_value2, double *V_value2)
 
 int d_get_value (int key, char *value1, int N_value2, double *V_value2)
 {
-     struct message pr;
+     message_t pr;
 
      // get message
      bzero(&pr, sizeof(struct message));
@@ -151,10 +151,10 @@ int d_get_value (int key, char *value1, int N_value2, double *V_value2)
 
 int d_modify_value(int key, char *value1, int N_value2, double *V_value2)
 {
-     struct message pr;
+     message_t pr;
 
      // set message
-     bzero(&pr, sizeof(struct message));
+     bzero(&pr, sizeof(message_t));
      pr.key = key;
      pr.op = 4;
      strcpy(pr.value1, value1);
@@ -172,7 +172,7 @@ int d_modify_value(int key, char *value1, int N_value2, double *V_value2)
 
 int d_delete_key(int key)
 {
-     struct message pr;
+     message_t pr;
 
      // set message
      bzero(&pr, sizeof(struct message));
@@ -188,7 +188,7 @@ int d_delete_key(int key)
 
 int d_exist(int key)
 {
-     struct message pr;
+     message_t pr;
 
      // set message
      bzero(&pr, sizeof(struct message));

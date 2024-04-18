@@ -27,54 +27,58 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <pthread.h>
 
 #include "operaciones.h"
 #include "mensajes.h"
 
+      pthread_mutex_t sync_mutex;
+      pthread_cond_t sync_cond;
+      int sync_copied = 0;
 
+void tratar_peticion (int *arg )
+{
+      int ret;
+      int sd_client;
+      message_t pr;
 
-void tratar_peticion ( int arg ){
-     int ret;
-     int sd_client;
-     struct message pr;
+      pthread_mutex_lock(&sync_mutex);
 
-     sd_client = (int) arg ;
-     ret = read(sd_client , &pr, sizeof(struct message)) ; 
+      sd_client = (int) *arg ;
+      ret = read(sd_client , &pr, sizeof(message_t)) ; 
 
-     switch (pr.op)
-     {
-         case 1: // INIT 
-               printf("iniciando init\n");
-               pr.status = init();
-		     printf(" %d = init();\n", pr.status);
-               break;
-         case 2: // SET
-               printf("1\n");
-               pr.status = set_value(pr.key, pr.value1, pr.N_value2, pr.value2) ;
-		     printf(" %d = set(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
-               break ;
-         case 3: // GET
-               pr.status = get_value(pr.key, &(pr.value1), pr.N_value2, &(pr.value2)) ;
-		     printf(" %d = get(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
-               break;
-         case 4: // GET
-               pr.status = modify_value(pr.key, &(pr.value1), pr.N_value2, &(pr.value2)) ;
-		     printf(" %d = modify(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
-               break;
-         case 5: // GET
-               pr.status = delete_key(pr.key);
-		     printf(" %d = delete(%i);\n", pr.status, pr.key);
-               break;
-         case 6: // GET
-               pr.status = exist(pr.key);
-		     printf(" %d = exist(%i);\n", pr.status, pr.key);
-               break;
-	     default:
-		     printf(" unknown();\n") ;
-               break ;
-     }
+      switch (pr.op)
+      {
+            case 1: // INIT 
+                  printf("iniciando init\n");
+                  pr.status = init();
+		      printf(" %d = init();\n", pr.status);
+                  break;
+            case 2: // SET
+                  pr.status = set_value(pr.key, pr.value1, pr.N_value2, pr.value2) ;
+		      printf(" %d = set(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
+                  break ;
+            case 3: // GET
+                  pr.status = get_value(pr.key, &(pr.value1), pr.N_value2, &(pr.value2)) ;
+		      printf(" %d = get(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
+                  break;
+            case 4: // GET
+                  pr.status = modify_value(pr.key, &(pr.value1), pr.N_value2, &(pr.value2)) ;
+		      printf(" %d = modify(%i, %c, %i, %f);\n", pr.status, pr.key, pr.value1[0], pr.N_value2, pr.value2[0]) ;
+                  break;
+            case 5: // GET
+                  pr.status = delete_key(pr.key);
+		      printf(" %d = delete(%i);\n", pr.status, pr.key);
+                  break;
+            case 6: // GET
+                  pr.status = exist(pr.key);
+		      printf(" %d = exist(%i);\n", pr.status, pr.key);
+                  break;
+	      default:
+		      printf(" unknown();\n") ;
+      }
 
-     ret = write(sd_client, (char *)&pr, sizeof(struct message)) ;
+     ret = write(sd_client, (char *)&pr, sizeof(message_t)) ;
      if (ret < 0) {
 	 perror("write: ") ;
      }
@@ -83,6 +87,11 @@ void tratar_peticion ( int arg ){
      if (ret < 0) {
 	 perror("close: ") ;
      }
+      sync_copied = 1;
+      pthread_cond_signal(&sync_cond);
+      pthread_mutex_unlock(&sync_mutex);
+
+      pthread_exit(NULL);
 }
 
 
@@ -145,18 +154,32 @@ int main ( int argc, char *argv[] )
      if (old_action.sa_handler != SIG_IGN) {
          sigaction (SIGINT, &new_action, NULL);
      }
+     
 
      // receive and treat requests
      while (0 == do_exit)
      {
-	  sd_client = accept(sd_server, (struct sockaddr *)&address,  (socklen_t*)&addrlen) ;
-	  if (sd_client <= 0)
-	  {
-		perror("accept");
-		exit(-1);
-	  }
+	      sd_client = accept(sd_server, (struct sockaddr *)&address,  (socklen_t*)&addrlen) ;
+	      if (sd_client <= 0)
+	      {
+		      perror("accept");
+		      exit(-1);
+	      }
+            pthread_attr_t attr;
+            pthread_attr_init(&attr);
+            pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
-          tratar_peticion(sd_client) ;
+
+            pthread_t thr;
+            pthread_create(&thr, &attr, tratar_peticion, (void*)&sd_client);
+
+            pthread_mutex_lock(&sync_mutex);
+            while (sync_copied == 0)
+            {
+                  pthread_cond_wait(&sync_cond, &sync_mutex);
+            }
+            sync_copied = 0;
+            pthread_mutex_unlock(&sync_mutex);
      }
 
      // end

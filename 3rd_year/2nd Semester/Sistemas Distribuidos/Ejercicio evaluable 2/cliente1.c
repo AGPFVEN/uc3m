@@ -33,23 +33,16 @@ int main ( int argc, char *argv[] )
 {
     int ret ;
 
-    // init
-    ret = d_init() ;
-    if (ret < 0) {
-        printf("d_init: error code %d\n", ret) ;
-        exit(-1) ;
-    }
-
     //set_value
     double *t;
     int size = 3;
     t = (double *) malloc(sizeof(double) * size);
     for (int i = 1; i < size; i++){
-        t[i] = i * 5;
+        t[i] = i * 10;
     }
 
     char *op = "ijijijijijo";
-    ret = d_set_value(5, op, size, t);
+    ret = d_set_value(2, op, size, t);
     if (ret < 0) {
         printf("d_set_value: error code %d\n", ret) ;
         exit(-1) ;
@@ -58,9 +51,11 @@ int main ( int argc, char *argv[] )
     char *pp;
     double *p;
     pp = (char *) malloc(sizeof(char) * 12);
-    p = (double *) malloc(sizeof(double) * 3);
+    p = (double *) malloc(sizeof(double) * size);
 
-    ret = d_get_value(5, pp, 3, p);
+    ret = d_get_value(2, pp, size, p);
+    printf("%s\n", pp);
+    printf("%f\n", p[1]);
 
     //set_value
     char *up = "cambiando";
@@ -70,11 +65,6 @@ int main ( int argc, char *argv[] )
     for (int i = 1; i < size; i++){
         ki[i] = i * 9;
     }
-    ret = d_modify_value(5, up, size, ki);
-    ret = d_exist(5);
-    ret = d_delete_key(5);
-    ret = d_exist(5);
-    ret = d_delete_key(5);
 
     return 0 ;
 }

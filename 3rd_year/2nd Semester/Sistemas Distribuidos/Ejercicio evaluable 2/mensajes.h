@@ -35,9 +35,9 @@
       int    N_value2;
       double value2[V2_MAX];
       // respuesta
-      // int    value;
       char   status;
-   } ;
+   };
+   typedef struct message message_t;
 
 #endif
 
