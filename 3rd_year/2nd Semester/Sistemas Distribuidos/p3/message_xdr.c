@@ -6,6 +6,17 @@
 #include "message.h"
 
 bool_t
+xdr_t_vector (XDR *xdrs, t_vector *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_array (xdrs, (char **)&objp->t_vector_val, (u_int *) &objp->t_vector_len, ~0,
+		sizeof (double), (xdrproc_t) xdr_double))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
 xdr_get_res (XDR *xdrs, get_res *objp)
 {
 	register int32_t *buf;
@@ -14,7 +25,9 @@ xdr_get_res (XDR *xdrs, get_res *objp)
 	 if (!xdr_vector (xdrs, (char *)objp->value1, 256,
 		sizeof (char), (xdrproc_t) xdr_char))
 		 return FALSE;
-	 if (!xdr_int (xdrs, &objp->value2))
+	 if (!xdr_int (xdrs, &objp->N_value2))
+		 return FALSE;
+	 if (!xdr_t_vector (xdrs, &objp->V_value2))
 		 return FALSE;
 	 if (!xdr_int (xdrs, &objp->status))
 		 return FALSE;
@@ -30,7 +43,7 @@ xdr_d_set_value_1_argument (XDR *xdrs, d_set_value_1_argument *objp)
 		 return FALSE;
 	 if (!xdr_int (xdrs, &objp->N_value2))
 		 return FALSE;
-	 if (!xdr_double (xdrs, &objp->V_value2))
+	 if (!xdr_t_vector (xdrs, &objp->V_value2))
 		 return FALSE;
 	return TRUE;
 }
@@ -44,7 +57,7 @@ xdr_d_get_value_1_argument (XDR *xdrs, d_get_value_1_argument *objp)
 		 return FALSE;
 	 if (!xdr_int (xdrs, &objp->N_value2))
 		 return FALSE;
-	 if (!xdr_double (xdrs, &objp->V_value2))
+	 if (!xdr_t_vector (xdrs, &objp->V_value2))
 		 return FALSE;
 	return TRUE;
 }
@@ -58,7 +71,7 @@ xdr_d_modify_value_1_argument (XDR *xdrs, d_modify_value_1_argument *objp)
 		 return FALSE;
 	 if (!xdr_int (xdrs, &objp->N_value2))
 		 return FALSE;
-	 if (!xdr_double (xdrs, &objp->V_value2))
+	 if (!xdr_t_vector (xdrs, &objp->V_value2))
 		 return FALSE;
 	return TRUE;
 }

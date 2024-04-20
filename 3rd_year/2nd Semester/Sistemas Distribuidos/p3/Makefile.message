@@ -12,7 +12,7 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = message.x
 
-TARGETS_SVC.c = message_svc.c message_server.c message_xdr.c lib.c 
+TARGETS_SVC.c = message_svc.c message_server.c message_xdr.c lib.c
 TARGETS_CLNT.c = message_clnt.c message_client.c message_xdr.c 
 TARGETS = message.h message_xdr.c message_clnt.c message_svc.c message_client.c message_server.c
 

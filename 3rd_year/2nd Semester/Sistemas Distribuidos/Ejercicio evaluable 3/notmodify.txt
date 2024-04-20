@@ -1,4 +1,0 @@
-message.h
-message_clnt.c
-message_svc.c
-message_xdr.c

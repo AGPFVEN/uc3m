@@ -12,7 +12,7 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = message.x
 
-TARGETS_SVC.c = message_svc.c message_server.c message_xdr.c lib.c 
+TARGETS_SVC.c = message_svc.c message_server.c message_xdr.c 
 TARGETS_CLNT.c = message_clnt.c message_client.c message_xdr.c 
 TARGETS = message.h message_xdr.c message_clnt.c message_svc.c message_client.c message_server.c
 
@@ -21,10 +21,8 @@ OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)
 # Compiler flags 
 
 CPPFLAGS += -D_REENTRANT
-CFLAGS += -g -I/usr/include/tirpc
-#CFLAGS += -g
-LDLIBS += -lnsl -lpthread -ldl -ltirpc
-#LDLIBS += -lnsl -lpthread
+CFLAGS += -g -Wall -I/usr/include/tirpc
+LDLIBS += -lnsl -lpthread -ldl -ltirpc 
  RPCGENFLAGS = 
 
 # Targets 
