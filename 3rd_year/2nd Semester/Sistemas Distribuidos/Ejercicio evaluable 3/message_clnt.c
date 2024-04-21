@@ -19,12 +19,11 @@ d_init_1(int *clnt_res, CLIENT *clnt)
 }
 
 enum clnt_stat 
-d_set_value_1(int key, char *value1, int N_value2, t_vector V_value2, int *clnt_res,  CLIENT *clnt)
+d_set_value_1(int key, char *value1, t_vector V_value2, int *clnt_res,  CLIENT *clnt)
 {
 	d_set_value_1_argument arg;
 	arg.key = key;
 	arg.value1 = value1;
-	arg.N_value2 = N_value2;
 	arg.V_value2 = V_value2;
 	return (clnt_call (clnt, d_set_value, (xdrproc_t) xdr_d_set_value_1_argument, (caddr_t) &arg,
 		(xdrproc_t) xdr_int, (caddr_t) clnt_res,
@@ -32,25 +31,20 @@ d_set_value_1(int key, char *value1, int N_value2, t_vector V_value2, int *clnt_
 }
 
 enum clnt_stat 
-d_get_value_1(int key, char *value1, int N_value2, t_vector V_value2, get_res *clnt_res,  CLIENT *clnt)
+d_get_value_1(int key, get_res *clnt_res,  CLIENT *clnt)
 {
-	d_get_value_1_argument arg;
-	arg.key = key;
-	arg.value1 = value1;
-	arg.N_value2 = N_value2;
-	arg.V_value2 = V_value2;
-	return (clnt_call (clnt, d_get_value, (xdrproc_t) xdr_d_get_value_1_argument, (caddr_t) &arg,
+	return (clnt_call(clnt, d_get_value,
+		(xdrproc_t) xdr_int, (caddr_t) &key,
 		(xdrproc_t) xdr_get_res, (caddr_t) clnt_res,
 		TIMEOUT));
 }
 
 enum clnt_stat 
-d_modify_value_1(int key, char *value1, int N_value2, t_vector V_value2, int *clnt_res,  CLIENT *clnt)
+d_modify_value_1(int key, char *value1, t_vector V_value2, int *clnt_res,  CLIENT *clnt)
 {
 	d_modify_value_1_argument arg;
 	arg.key = key;
 	arg.value1 = value1;
-	arg.N_value2 = N_value2;
 	arg.V_value2 = V_value2;
 	return (clnt_call (clnt, d_modify_value, (xdrproc_t) xdr_d_modify_value_1_argument, (caddr_t) &arg,
 		(xdrproc_t) xdr_int, (caddr_t) clnt_res,

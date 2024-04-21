@@ -3,8 +3,8 @@
 
 # Parameters
 
-CLIENT = message_client
-SERVER = message_server
+CLIENT = cliente
+SERVER = servidor
 
 SOURCES_CLNT.c = 
 SOURCES_CLNT.h = 
@@ -12,9 +12,9 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = message.x
 
-TARGETS_SVC.c = message_svc.c message_server.c message_xdr.c lib.c 
-TARGETS_CLNT.c = message_clnt.c message_client.c message_xdr.c 
-TARGETS = message.h message_xdr.c message_clnt.c message_svc.c message_client.c message_server.c
+TARGETS_SVC.c = message_svc.c servidor.c message_xdr.c lib.c
+TARGETS_CLNT.c = message_clnt.c message_xdr.c cliente.c
+TARGETS = message.h message_xdr.c message_clnt.c message_svc.c claves.c servidor.c cliente.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)
 OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)
@@ -25,11 +25,15 @@ CFLAGS += -g -I/usr/include/tirpc
 #CFLAGS += -g
 LDLIBS += -lnsl -lpthread -ldl -ltirpc
 #LDLIBS += -lnsl -lpthread
- RPCGENFLAGS = 
+RPCGENFLAGS = 
 
 # Targets 
 
 all : $(CLIENT) $(SERVER)
+
+libclaves.so: claves.c
+	$(CC) $(CFLAGS) -shared -o $@ -fpic $^
+	export LD_LIBRARY_PATH="./"
 
 $(TARGETS) : $(SOURCES.x) 
 	rpcgen $(RPCGENFLAGS) $(SOURCES.x)
@@ -38,8 +42,8 @@ $(OBJECTS_CLNT) : $(SOURCES_CLNT.c) $(SOURCES_CLNT.h) $(TARGETS_CLNT.c)
 
 $(OBJECTS_SVC) : $(SOURCES_SVC.c) $(SOURCES_SVC.h) $(TARGETS_SVC.c) 
 
-$(CLIENT) : $(OBJECTS_CLNT) 
-	$(LINK.c) -o $(CLIENT) $(OBJECTS_CLNT) $(LDLIBS) 
+$(CLIENT) : $(OBJECTS_CLNT) libclaves.so
+	$(LINK.c) -o $(CLIENT) $(OBJECTS_CLNT) libclaves.so $(LDLIBS) 
 
 $(SERVER) : $(OBJECTS_SVC) 
 	$(LINK.c) -o $(SERVER) $(OBJECTS_SVC) $(LDLIBS)

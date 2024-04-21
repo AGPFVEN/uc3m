@@ -173,14 +173,14 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2){
 	}
 	*(value1 + charCount) = '\0';	
 
-	// get value 2
+	// get value 2 and N
 	char floatToString[328] = "";
-	int i = 0;
+	*N_value2 = 0;
 	while ((ch = fgetc(stream)) != EOF){
 		if(ch == ','){
-			V_value2[i] =  strtod(floatToString, &stopstring);
+			V_value2[*N_value2] =  strtod(floatToString, &stopstring);
 			strcpy(floatToString, "");
-			i++;
+			*N_value2 += 1;
 		} else {
 			bf[0] = ch;
 			strcat(floatToString, bf);

@@ -22,7 +22,6 @@ typedef struct {
 
 struct get_res {
 	char value1[256];
-	int N_value2;
 	t_vector V_value2;
 	int status;
 };
@@ -31,23 +30,13 @@ typedef struct get_res get_res;
 struct d_set_value_1_argument {
 	int key;
 	char *value1;
-	int N_value2;
 	t_vector V_value2;
 };
 typedef struct d_set_value_1_argument d_set_value_1_argument;
 
-struct d_get_value_1_argument {
-	int key;
-	char *value1;
-	int N_value2;
-	t_vector V_value2;
-};
-typedef struct d_get_value_1_argument d_get_value_1_argument;
-
 struct d_modify_value_1_argument {
 	int key;
 	char *value1;
-	int N_value2;
 	t_vector V_value2;
 };
 typedef struct d_modify_value_1_argument d_modify_value_1_argument;
@@ -60,14 +49,14 @@ typedef struct d_modify_value_1_argument d_modify_value_1_argument;
 extern  enum clnt_stat d_init_1(int *, CLIENT *);
 extern  bool_t d_init_1_svc(int *, struct svc_req *);
 #define d_set_value 2
-extern  enum clnt_stat d_set_value_1(int , char *, int , t_vector , int *, CLIENT *);
-extern  bool_t d_set_value_1_svc(int , char *, int , t_vector , int *, struct svc_req *);
+extern  enum clnt_stat d_set_value_1(int , char *, t_vector , int *, CLIENT *);
+extern  bool_t d_set_value_1_svc(int , char *, t_vector , int *, struct svc_req *);
 #define d_get_value 3
-extern  enum clnt_stat d_get_value_1(int , char *, int , t_vector , get_res *, CLIENT *);
-extern  bool_t d_get_value_1_svc(int , char *, int , t_vector , get_res *, struct svc_req *);
+extern  enum clnt_stat d_get_value_1(int , get_res *, CLIENT *);
+extern  bool_t d_get_value_1_svc(int , get_res *, struct svc_req *);
 #define d_modify_value 4
-extern  enum clnt_stat d_modify_value_1(int , char *, int , t_vector , int *, CLIENT *);
-extern  bool_t d_modify_value_1_svc(int , char *, int , t_vector , int *, struct svc_req *);
+extern  enum clnt_stat d_modify_value_1(int , char *, t_vector , int *, CLIENT *);
+extern  bool_t d_modify_value_1_svc(int , char *, t_vector , int *, struct svc_req *);
 #define d_delete_key 5
 extern  enum clnt_stat d_delete_key_1(int , int *, CLIENT *);
 extern  bool_t d_delete_key_1_svc(int , int *, struct svc_req *);
@@ -104,14 +93,12 @@ extern int ejercicio3_1_freeresult ();
 extern  bool_t xdr_t_vector (XDR *, t_vector*);
 extern  bool_t xdr_get_res (XDR *, get_res*);
 extern  bool_t xdr_d_set_value_1_argument (XDR *, d_set_value_1_argument*);
-extern  bool_t xdr_d_get_value_1_argument (XDR *, d_get_value_1_argument*);
 extern  bool_t xdr_d_modify_value_1_argument (XDR *, d_modify_value_1_argument*);
 
 #else /* K&R C */
 extern bool_t xdr_t_vector ();
 extern bool_t xdr_get_res ();
 extern bool_t xdr_d_set_value_1_argument ();
-extern bool_t xdr_d_get_value_1_argument ();
 extern bool_t xdr_d_modify_value_1_argument ();
 
 #endif /* K&R C */

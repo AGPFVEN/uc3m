@@ -25,19 +25,19 @@ _d_init_1 (void  *argp, void *result, struct svc_req *rqstp)
 int
 _d_set_value_1 (d_set_value_1_argument *argp, void *result, struct svc_req *rqstp)
 {
-	return (d_set_value_1_svc(argp->key, argp->value1, argp->N_value2, argp->V_value2, result, rqstp));
+	return (d_set_value_1_svc(argp->key, argp->value1, argp->V_value2, result, rqstp));
 }
 
 int
-_d_get_value_1 (d_get_value_1_argument *argp, void *result, struct svc_req *rqstp)
+_d_get_value_1 (int  *argp, void *result, struct svc_req *rqstp)
 {
-	return (d_get_value_1_svc(argp->key, argp->value1, argp->N_value2, argp->V_value2, result, rqstp));
+	return (d_get_value_1_svc(*argp, result, rqstp));
 }
 
 int
 _d_modify_value_1 (d_modify_value_1_argument *argp, void *result, struct svc_req *rqstp)
 {
-	return (d_modify_value_1_svc(argp->key, argp->value1, argp->N_value2, argp->V_value2, result, rqstp));
+	return (d_modify_value_1_svc(argp->key, argp->value1, argp->V_value2, result, rqstp));
 }
 
 int
@@ -57,7 +57,7 @@ ejercicio3_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
 		d_set_value_1_argument d_set_value_1_arg;
-		d_get_value_1_argument d_get_value_1_arg;
+		int d_get_value_1_arg;
 		d_modify_value_1_argument d_modify_value_1_arg;
 		int d_delete_key_1_arg;
 		int d_exist_1_arg;
@@ -92,7 +92,7 @@ ejercicio3_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		break;
 
 	case d_get_value:
-		_xdr_argument = (xdrproc_t) xdr_d_get_value_1_argument;
+		_xdr_argument = (xdrproc_t) xdr_int;
 		_xdr_result = (xdrproc_t) xdr_get_res;
 		local = (bool_t (*) (char *, void *,  struct svc_req *))_d_get_value_1;
 		break;
