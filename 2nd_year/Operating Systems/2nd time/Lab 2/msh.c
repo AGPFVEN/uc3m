@@ -139,6 +139,8 @@ void getCompleteCommand(char*** argvv, int num_command) {
  */
 int main(int argc, char* argv[])
 {
+    //My variables
+
 	/**** Do not delete this code.****/
 	int end = 0; 
 	int executed_cmd_lines = -1;
@@ -197,28 +199,128 @@ int main(int argc, char* argv[])
 			if (command_counter > MAX_COMMANDS){
 				printf("Error: Maximum number of commands is %d \n", MAX_COMMANDS);
 			} else {
-                printf("%i\n", command_counter);
 				// Print command
 				print_command(argvv, filev, in_background);
-                // *argvv[1] para sacar segundo comando
-                // argvv[0][1] flag para el comando
                 
-                // Standard input redirection
-                //------------------- wc < dudas.txt para testear (distinto a wc dudas.txt)
-                //------------------- solo un input y/o output por comando
-                int redirection_pipe_input[2];
-                if (pipe(redirection_pipe_input) == -1){
-                    perror("Error creating pipe at redirection input");
-                    exit(EXIT_FAILURE);
+                //history management
+                struct command cmd;
+                run_history++;
+                if (run_history > 20){
+                    free_command(&history[19]);
+                }
+				store_command(argvv, filev, in_background, &cmd);
+
+                if (strcmp(argvv[0][0], "myhistory") == 0) {
+                    if (argvv[0][1] == NULL){
+                        //for (int i = 0; i < run_history; i++){
+                            //int num_args_in_command = 0;
+                            //while(history[i].argvv[] != NULL){
+
+                            //}
+                            //printf("%i ", i);
+                        //}
+                    } else {
+                        int num_in_history = atoi(argvv[0][1]);
+                        if ((num_in_history > run_history) || (num_in_history < 0)){
+                            printf("ERROR: command not found\n");
+                        } else {
+                            argvv = history[num_in_history].argvv;
+                            for (int i=0; i<3; i++){
+                                strcpy(filev[i], history[num_in_history].filev[i]);
+                            }
+                            in_background = history[num_in_history].in_background;
+                        }
+                    }
+
                 }
 
-                int pid = fork();
-                switch(pid){
-                    case -1: // ------------------ need more specidics 
-                        perror("Error at creating new process");
-                        exit(EXIT_FAILURE);
-                    case 0: // Son process
+                if (strcmp(argvv[0][0], "exit") == 0) {
+                    printf("exiting...\n");
+                    while (1) {
+                        exit(0);
+                    }
+                }
+                
+                if (strcmp(argvv[0][0], "mycalc") == 0) {
+                    // Command execution
+                    if ((argvv[0][1] == NULL) || (argvv[0][2] == NULL) || (argvv[0][3] == NULL) ||
+                        (argvv[0][4] != NULL)) {
+                        fprintf(stderr, "[ERROR] The structure of the command is mycalc <operand_1> <add/mul/div> <operand_2>\n");
+                    } else {
+                        // 1. Get the first number
+                        long first_number = atol(argvv[0][1]);
+                        // 2. Get the second number
+                        long second_number = atol(argvv[0][3]);
+                        // 3. Get the operator + result + print
+                        char operator_str[3];
+                        strcpy(operator_str, argvv[0][2]);
 
+                        if (strcmp(operator_str, "add") == 0) {
+                            long int acc_local_int;
+                            long int result = first_number + second_number;
+                            char acc_local[25];
+                            strcpy(acc_local, getenv("Acc"));
+                                acc_local_int = atoi(acc_local);
+                                acc_local_int += result;
+                                sprintf(acc_local, "%li", acc_local_int);
+                                setenv("Acc", acc_local, 1);
+                                fprintf(stderr, "[OK] %li + %li = %li; Acc %li\n", first_number, second_number, result, acc_local_int);
+
+                        } else if (strcmp(operator_str, "mul") == 0) { // Multiplication
+                            long result = first_number * second_number;
+                            fprintf(stderr, "[OK] %li * %li = %li\n", first_number, second_number, result);
+
+                        } else if (strcmp(operator_str, "div") == 0) { // Division
+                            long result = first_number / second_number;
+                            fprintf(stderr, "[OK] %li / %li = %li; Remainder %d\n", first_number, second_number, result,
+                                   (int) first_number % (int) second_number);
+
+                        } else {
+                            printf("[ERROR] The structure of the command is mycalc <operand_1> <add/mul/div> <operand_2>\n");
+                        }
+                    }
+                }
+
+                //Buscar formas de mejorar---------------------------------------------------------
+                int proceses_pipes[command_counter - 1][2];
+                int fd_open;
+
+                if (command_counter > 1){
+                    for (int i = 0; i < command_counter; i++){
+                        if ((pipe(proceses_pipes[i])) == -1){
+                            perror("Error creating pipes");
+                            exit(EXIT_FAILURE);
+                        }
+                    }
+                }
+
+                if (command_counter == 2){
+                    // Deletes father but accomplishes the task
+                    int fd[2];
+                    pipe(fd);
+                    if (fork()!=0) { /* código del parent */
+                        // handle output redirection if exists
+                        if (filev[1][0] != '0')
+                        {
+                            // open file
+                            if ((fd_open = open(filev[1], O_WRONLY | O_CREAT)) == -1 ){
+                                perror("Error opening file at redirection output");
+                                exit(EXIT_FAILURE);
+                            }
+
+                            // pipe handling
+                            close(STDOUT_FILENO);
+                            dup(fd_open);
+                            close(fd_open);
+                        }
+
+                        close(STDIN_FILENO);
+                        dup(fd[STDIN_FILENO]);
+                        close(fd[STDIN_FILENO]);
+                        close(fd[STDOUT_FILENO]);
+                        execvp(argvv[1][0], argvv[1]);
+
+                    } else { /* código del child */
                         // handle input redirection if exists
                         if (filev[0][0] != '0')
                         {
@@ -230,49 +332,109 @@ int main(int argc, char* argv[])
                             }
 
                             // pipe handling
-                            dup2(fd_open, STDIN_FILENO);
+                            close(STDIN_FILENO);
+                            dup(fd_open);
                             close(fd_open);
                         }
 
-                        // handle output redirection if exists
-                        if (filev[1][0] != '0')
-                        {
-                            // open file
-                            int fd_open;
-                            if ((fd_open = open(filev[1], O_WRONLY)) == -1 ){
-                                perror("Error opening file at redirection output");
+                        close(STDOUT_FILENO);
+                        dup(fd[STDOUT_FILENO]);
+                        close(fd[STDOUT_FILENO]);
+                        close(fd[STDIN_FILENO]);
+                        execvp(argvv[0][0], argvv[0]);
+                    }
+                } else{
+
+                    for (int i = 0; i < command_counter; i++){
+                        int pid = fork();
+                        switch(pid){
+                            case -1: // ------------------ need more specidics 
+                                perror("Error at creating new process");
                                 exit(EXIT_FAILURE);
-                            }
 
-                            // pipe handling
-                            dup2(fd_open, STDOUT_FILENO);
-                            close(fd_open);
-                        }
+                            case 0: // Son process
 
-                        // handle error redirection if exists
-                        if (filev[2][0] != '0')
-                        {
-                            // open file
-                            int fd_open;
-                            if ((fd_open = open(filev[2], O_WRONLY)) == -1 ){
-                                perror("Error opening file at redirection error");
-                                exit(EXIT_FAILURE);
-                            }
+                                // first command process
+                                if (i == 0)
+                                {
+                                
+                                    // handle input redirection if exists
+                                    if (filev[0][0] != '0')
+                                    {
+                                        // open file
+                                        int fd_open;
+                                        if ((fd_open = open(filev[0], O_RDONLY)) == -1 ){
+                                            perror("Error opening file at redirection input");
+                                            exit(EXIT_FAILURE);
+                                        }
 
-                            // pipe handling
-                            dup2(fd_open, STDERR_FILENO);
-                            close(fd_open);
-                        }
+                                        // pipe handling
+                                        close(STDIN_FILENO);
+                                        dup(fd_open);
+                                        close(fd_open);
+                                    }
+                                } else {
+                                    //dup2(proceses_pipes[i - 1][0], STDIN_FILENO);
+                                    close(STDIN_FILENO);
+                                    dup(proceses_pipes[i - 1][0]);
+                                    close(proceses_pipes[i - 1][0]);
+                                    close(proceses_pipes[i - 1][1]);
+                                }
 
-                        execvp(argvv[0][0], argvv[0]);  //execute command
+                                // last process
+                                if (i == command_counter - 1)
+                                {
+                                    // handle output redirection if exists
+                                    if (filev[1][0] != '0')
+                                    {
+                                        // open file
+                                        if ((fd_open = open(filev[1], O_WRONLY | O_CREAT)) == -1 ){
+                                            perror("Error opening file at redirection output");
+                                            exit(EXIT_FAILURE);
+                                        }
 
-                        // in case of error (because the process image change and the next code will not be executed)
-                        exit(-1);
-                    default:
-                        if (in_background == 0){
-                            wait(0);
-                        }
-                }
+                                        // pipe handling
+                                        close(STDOUT_FILENO);
+                                        dup(fd_open);
+                                        close(fd_open);
+                                    }
+                                } else {
+                                    //dup2(proceses_pipes[i][1], STDOUT_FILENO);
+                                    close(STDOUT_FILENO);
+                                    dup(proceses_pipes[i][1]);
+                                    close(proceses_pipes[i][1]);
+                                    close(proceses_pipes[i][0]);
+                                }
+
+                                // handle error redirection if exists
+                                if (filev[2][0] != '0')
+                                {
+                                    // open file
+                                    int fd_open;
+                                    if ((fd_open = open(filev[2], O_WRONLY | O_CREAT)) == -1 ){
+                                        perror("Error opening file at redirection error");
+                                        exit(EXIT_FAILURE);
+                                    }
+
+                                    // pipe handling
+                                    close(STDERR_FILENO);
+                                    dup(fd_open);
+                                    close(fd_open);
+                                }
+
+                                execvp(argvv[i][0], argvv[i]);  //execute command
+
+                                // in case of error (because the process image change and the next code will not be executed)
+                                exit(-1);
+                            default:
+                                if (in_background == 0){
+                                    waitpid(pid, &status, 0);
+                                } else {
+                                    printf("%d\n", pid);
+                                }
+                    }   }
+                }  
+                
             }
 		}
 	}	

@@ -1,3 +1,1 @@
-this is a test text file
-
-this is a test text file
+This is an example 1

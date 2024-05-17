@@ -1,1 +1,12 @@
-.txt
+1.txt
+2.txt
+authors.txt
+checker_os_p2.sh
+dudas.txt
+libparser.so
+Makefile
+msh
+msh.c
+msh.o
+p2_minishell_2024.zip
+t.c

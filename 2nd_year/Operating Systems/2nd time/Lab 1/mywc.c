@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 
 	// declare variables in order to read file
 	int buffer_size = 1;
-	char* buffer_file = malloc(sizeof(char) * buffer_size);
+char* buffer_file = malloc(sizeof(char) * buffer_size);
 	ssize_t result;
 	int n_lines = 0, n_words = 0, n_bytes = 0, in_word = 0;
 
